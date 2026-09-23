@@ -1,4 +1,4 @@
-import type { PlanResponseDTO } from "@/dtos/plans";
+import type { PlanName, PlanResponseDTO } from "@/dtos/plans";
 
 /**
  * Regras de exibição dos planos, as mesmas da tela de planos do app
@@ -34,6 +34,12 @@ export function planAllowances(plan: PlanResponseDTO) {
 }
 
 /**
+ * Recurso ainda sem coluna na tabela `plans`: liberado por nome de plano até
+ * a API passar a informá-lo.
+ */
+const SMART_PRODUCT_PLANS: PlanName[] = ["avançado", "profissional"];
+
+/**
  * Itens incluídos ou não. WhatsApp é envio por link (não há integração de
  * publicação) e o TikTok ainda não pode ser conectado, por isso os rótulos
  * diferem dos do app.
@@ -45,5 +51,6 @@ export function planInclusions(plan: PlanResponseDTO) {
     { label: "Publicação no Facebook", included: plan.facebookIntegration },
     { label: "Envio pelo WhatsApp", included: plan.whatsappIntegration },
     { label: "Publicação no TikTok (em breve)", included: plan.tiktokIntegration },
+    { label: "Cadastro inteligente de produtos (em breve)", included: SMART_PRODUCT_PLANS.includes(plan.name) },
   ];
 }
