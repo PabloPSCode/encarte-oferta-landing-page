@@ -1,0 +1,27 @@
+#!/bin/sh
+# Impede o push de qualquer commit cujo autor ou committer seja pablolucio97.
+. "$(dirname "$0")/_identity.sh"
+
+zero=0000000000000000000000000000000000000000
+status=0
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+  [ "$local_sha" = "$zero" ] && continue # remoção de branch
+  if [ "$remote_sha" = "$zero" ]; then
+    range="$local_sha --not --remotes=origin"
+  else
+    range="$remote_sha..$local_sha"
+  fi
+  # shellcheck disable=SC2086
+  bad=$(git log --format='%h %an <%ae> / %cn <%ce>' $range | while read -r line; do
+    is_blocked "$line" && echo "$line"
+  done)
+  if [ -n "$bad" ]; then
+    echo "✖ Push bloqueado: há commits de pablolucio97 em $local_ref:" >&2
+    echo "$bad" | sed 's/^/    /' >&2
+    echo "  Reescreva a autoria antes de enviar (ex.: git commit --amend --reset-author)." >&2
+    status=1
+  fi
+done
+
+exit $status

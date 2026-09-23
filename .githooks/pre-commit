@@ -1,0 +1,21 @@
+#!/bin/sh
+# Impede commits feitos com a identidade pablolucio97.
+. "$(dirname "$0")/_identity.sh"
+
+author=$(git var GIT_AUTHOR_IDENT)
+committer=$(git var GIT_COMMITTER_IDENT)
+
+for ident in "$author" "$committer"; do
+  if is_blocked "$ident"; then
+    echo "✖ Commit bloqueado: este repositório é gerenciado por $ALLOWED_NAME <$ALLOWED_EMAIL>." >&2
+    echo "  Identidade recusada: $ident" >&2
+    echo "  Corrija com: git config user.name \"$ALLOWED_NAME\" && git config user.email \"$ALLOWED_EMAIL\"" >&2
+    exit 1
+  fi
+done
+
+email=$(git config user.email)
+if [ "$email" != "$ALLOWED_EMAIL" ]; then
+  echo "✖ Commit bloqueado: user.email deve ser $ALLOWED_EMAIL (atual: ${email:-vazio})." >&2
+  exit 1
+fi
