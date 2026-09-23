@@ -1,8 +1,8 @@
 "use client";
 
 import {
-  GLBViewer,
-  GLBViewerProps,
+    GLBViewer,
+    GLBViewerProps,
 } from "@/components/animations-and-loading/GLBViewer";
 import useResponsiveGLBScale from "@/hooks/useResponsiveGLBScale";
 import clsx from "clsx";
@@ -78,7 +78,7 @@ export default function GLBSection({
       <div
         className="sticky top-0 flex h-screen w-full items-center justify-center"
       >
-        <div className="relative aspect-video w-full h-full overflow-hidden bg-secondary-900 touch-none flex flex-col items-center justify-center">
+        <div className="relative aspect-video w-full h-full overflow-hidden bg-on-brand-900 touch-none flex flex-col items-center justify-center">
           <h1
             className={clsx(
               "text-2xl sm:text-3xl lg:text-4xl text-white font-bold absolute top-24 text-center py-12 p-4",
