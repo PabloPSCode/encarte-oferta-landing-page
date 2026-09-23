@@ -1,11 +1,11 @@
-import type { Metadata } from "next";
-import Link from "next/link";
-import { WhatsappLogo } from "@phosphor-icons/react/dist/ssr";
 import LegalPage, { type LegalSection } from "@/components/legal/LegalPage";
 import { SITE, SUPPORT, whatsappLink } from "@/content/site";
+import { WhatsappLogo } from "@phosphor-icons/react/dist/ssr";
+import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Exclusão de dados",
+  title: "Meus Dados",
   description:
     "Como solicitar a exclusão dos seus dados do Encarte Oferta, inclusive os dados recebidos do Facebook e do Instagram, pelo WhatsApp do suporte.",
   alternates: { canonical: "/meus-dados" },
@@ -58,7 +58,7 @@ const sections: LegalSection[] = [
         <WhatsappButton />
         <p>
           Atendimento de {SUPPORT.whatsappHours.toLowerCase()}. Se preferir, envie o pedido para o e-mail{" "}
-          <a href={`mailto:${SUPPORT.email}?subject=${encodeURIComponent("Solicitação de exclusão de dados")}`}>
+          <a href={`mailto:${SUPPORT.email}?subject=${encodeURIComponent("Solicitação de Meus Dados")}`}>
             {SUPPORT.email}
           </a>{" "}
           a partir do e-mail cadastrado.
@@ -163,7 +163,7 @@ export default function DataDeletionPage() {
   return (
     <LegalPage
       eyebrow="Privacidade e LGPD"
-      title="Exclusão de dados"
+      title="Meus Dados"
       related={{ href: "/politica-de-privacidade", label: "Política de Privacidade" }}
       intro={
         <p>

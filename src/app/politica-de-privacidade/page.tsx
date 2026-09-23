@@ -1,7 +1,7 @@
-import type { Metadata } from "next";
-import Link from "next/link";
 import LegalPage, { type LegalSection } from "@/components/legal/LegalPage";
 import { COMPANY, SITE, SUPPORT } from "@/content/site";
+import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Política de Privacidade",
@@ -283,7 +283,7 @@ const sections: LegalSection[] = [
           </li>
           <li>
             <strong>Eliminação definitiva</strong>: pode ser solicitada a qualquer momento pelo WhatsApp do suporte, conforme
-            a página <Link href="/meus-dados">Exclusão de dados</Link>, e será realizada ressalvadas as hipóteses
+            a página <Link href="/meus-dados">Meus Dados</Link>, e será realizada ressalvadas as hipóteses
             legais de conservação.
           </li>
           <li>
@@ -318,7 +318,7 @@ const sections: LegalSection[] = [
           Os tokens de acesso são armazenados de forma criptografada (AES-256-GCM). Você pode desconectar uma conta a
           qualquer momento em <em>Configurações → Conexões</em> ou remover o aplicativo nas configurações da sua conta do
           Facebook. Nos dois casos a conexão deixa de ser usada. Para solicitar a eliminação dos dados da conexão, siga as
-          instruções da página <Link href="/meus-dados">Exclusão de dados</Link>.
+          instruções da página <Link href="/meus-dados">Meus Dados</Link>.
         </p>
         <p>O uso dessas redes também está sujeito aos termos e à política de privacidade da Meta.</p>
       </>

@@ -1,7 +1,7 @@
-import Link from "next/link";
-import { EnvelopeSimple, WhatsappLogo } from "@phosphor-icons/react/dist/ssr";
-import Logo from "./Logo";
 import { COMPANY, SITE, SUPPORT, whatsappLink } from "@/content/site";
+import { EnvelopeSimple, WhatsappLogo } from "@phosphor-icons/react/dist/ssr";
+import Link from "next/link";
+import Logo from "./Logo";
 
 const PRODUCT_LINKS = [
   { href: "/#recursos", label: "Recursos" },
@@ -14,7 +14,7 @@ const PRODUCT_LINKS = [
 const LEGAL_LINKS = [
   { href: "/termos-de-uso", label: "Termos de Uso" },
   { href: "/politica-de-privacidade", label: "Política de Privacidade" },
-  { href: "/meus-dados", label: "Exclusão de dados" },
+  { href: "/meus-dados", label: "Meus Dados" },
 ];
 
 export default function Footer() {
