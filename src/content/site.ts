@@ -15,14 +15,14 @@ export const SITE = {
 
 /**
  * Operador da plataforma (controlador dos dados, para fins da LGPD).
- * CNPJ e endereço não constam nos repositórios: preencha antes de publicar.
- * Campos vazios simplesmente não são exibidos nas páginas legais.
+ * CNPJ, endereço e comarca do foro não constam nos repositórios: preencha
+ * aqui antes de publicar. Campos vazios não são exibidos nas páginas legais.
  */
 export const COMPANY = {
-  legalName: process.env.NEXT_PUBLIC_COMPANY_LEGAL_NAME || "PLS Sistemas",
-  cnpj: process.env.NEXT_PUBLIC_COMPANY_CNPJ || "",
-  address: process.env.NEXT_PUBLIC_COMPANY_ADDRESS || "",
-  forum: process.env.NEXT_PUBLIC_COMPANY_FORUM || "",
+  legalName: "PLS Sistemas",
+  cnpj: "",
+  address: "",
+  forum: "",
 };
 
 export const SUPPORT = {
