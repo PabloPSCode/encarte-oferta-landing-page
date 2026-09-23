@@ -97,50 +97,6 @@ export const FAQ = [
   },
 ] as const;
 
-/**
- * Planos (enum PlanName em encarte-oferta-api/prisma/schema.prisma).
- * Valores e cotas são cadastrados pelo superadmin via POST /plans e não
- * existem no código: preencha os campos abaixo para exibi-los na página.
- * Enquanto estiverem nulos, o card mostra "Sob consulta".
- */
-export interface PlanInfo {
-  name: string;
-  tagline: string;
-  highlight?: boolean;
-  monthValueInCents: number | null;
-  yearValueInCents: number | null;
-}
-
-export const PLANS: PlanInfo[] = [
-  {
-    name: "Start",
-    tagline: "Para quem está começando a divulgar ofertas toda semana.",
-    monthValueInCents: null,
-    yearValueInCents: null,
-  },
-  {
-    name: "Avançado",
-    tagline: "Mais encartes, temas e vídeos com IA para lojas com ofertas frequentes.",
-    highlight: true,
-    monthValueInCents: null,
-    yearValueInCents: null,
-  },
-  {
-    name: "Profissional",
-    tagline: "A maior cota de créditos e de contas conectadas, para alto volume.",
-    monthValueInCents: null,
-    yearValueInCents: null,
-  },
-];
-
-/** O que cada plano define (campos do model Plan). */
-export const PLAN_QUOTAS = [
-  "Encartes por mês",
-  "Temas gerados com IA por mês",
-  "Vídeos gerados com IA por mês",
-  "Contas conectadas (Instagram e Facebook)",
-];
-
 export function formatBRL(cents: number) {
   return (cents / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
