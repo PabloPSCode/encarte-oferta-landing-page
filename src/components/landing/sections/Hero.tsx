@@ -1,6 +1,6 @@
 import hortifruti from "@/assets/flyers/encarte_hortifruit.webp";
 import mercearia from "@/assets/flyers/encarte_mercearia.webp";
-import petshop from "@/assets/flyers/encarte_petshop.webp";
+import lojaPneus from '@/assets/flyers/encarte_loja_pneus.webp';
 import { CTA_LINK } from "@/content/site";
 import Image from "next/image";
 import CtaButton from "../CtaButton";
@@ -19,14 +19,13 @@ export default function Hero() {
         aria-hidden
         className="pointer-events-none absolute inset-0 opacity-[0.16] [background-image:radial-gradient(#1A1400_1.2px,transparent_1.3px)] [background-size:18px_18px] [mask-image:linear-gradient(115deg,transparent_35%,black_85%)]"
       />
-      <div aria-hidden className="pointer-events-none absolute -right-40 -top-40 size-[520px] rounded-full bg-white/20 blur-3xl" />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -right-40 -top-40 size-[520px] rounded-full bg-white/20 blur-3xl"
+      />
 
       <div className="relative mx-auto grid max-w-[1200px] items-center gap-12 px-4 pb-20 pt-14 sm:px-7 lg:grid-cols-[1.05fr_0.95fr] lg:pb-24 lg:pt-20">
         <div className="min-w-0">
-          <span className="inline-flex items-center gap-2 rounded-full bg-white/80 px-3.5 py-1.5 text-[11.5px] font-extrabold uppercase tracking-[0.08em] text-brand-ink">
-            <span className="size-2 animate-pulse rounded-full bg-accent" />
-            Encartes com IA para o seu comércio
-          </span>
           <h1 className="mt-5 text-[40px] font-black leading-[1.04] tracking-[-0.035em] text-on-brand text-balance sm:text-[54px] lg:text-[60px]">
             Seu encarte de ofertas pronto em{" "}
             <span className="whitespace-nowrap">
@@ -38,8 +37,9 @@ export default function Hero() {
             não em dias.
           </h1>
           <p className="mt-6 max-w-[540px] text-[16.5px] font-medium leading-relaxed text-on-brand-soft text-pretty">
-            Escolha um tema, selecione os produtos do catálogo, defina os preços e publique no Instagram e no Facebook,
-            com vídeo narrado para Reels e Stories. Sem designer e sem editor complicado.
+            Escolha um tema, selecione os produtos do catálogo, defina os preços
+            e publique no Instagram e no Facebook, com vídeo narrado para Reels
+            e Stories. Sem designer e sem editor complicado.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <CtaButton href={CTA_LINK} external arrow>
@@ -53,8 +53,12 @@ export default function Hero() {
             {STATS.map((s) => (
               <div key={s.value}>
                 <dt className="sr-only">{s.label}</dt>
-                <dd className="text-[27px] font-black tracking-[-0.03em] text-on-brand">{s.value}</dd>
-                <dd className="mt-0.5 text-[12.5px] font-semibold text-on-brand-soft">{s.label}</dd>
+                <dd className="text-[27px] font-black tracking-[-0.03em] text-on-brand">
+                  {s.value}
+                </dd>
+                <dd className="mt-0.5 text-[12.5px] font-semibold text-on-brand-soft">
+                  {s.label}
+                </dd>
               </div>
             ))}
           </dl>
@@ -65,25 +69,22 @@ export default function Hero() {
             src={hortifruti}
             alt="Encarte de hortifrúti com frutas e verduras"
             sizes="200px"
-            className="absolute bottom-[4%] left-0 z-10 w-[40%] max-w-[200px] animate-float-b rounded-[14px] shadow-float"
+            className="absolute bottom-[4%] left-0 z-10 w-[40%] max-w-[200px] animate-float-b rounded-md shadow-float"
           />
           <Image
-            src={petshop}
-            alt="Encarte de pet shop com rações e acessórios"
+            src={lojaPneus}
+            alt="Encarte de loja de pneus"
             sizes="190px"
-            className="absolute right-0 top-[2%] z-10 w-[37%] max-w-[190px] animate-float-b rounded-[14px] shadow-float [animation-delay:-3s] [animation-direction:reverse]"
+            className="absolute right-0 top-[2%] z-10 w-[37%] max-w-[190px] animate-float-b rounded-md shadow-float [animation-delay:-3s] [animation-direction:reverse]"
           />
           <Image
             src={mercearia}
             alt="Encarte de supermercado Preço Baixo Todo Dia"
             priority
             sizes="(min-width: 640px) 290px, 58vw"
-            className="relative z-20 w-[58%] max-w-[290px] animate-float-a rounded-2xl shadow-float"
+            className="relative z-20 w-[58%] max-w-[290px] animate-float-a rounded-md shadow-float"
           />
-          <div className="absolute -bottom-2 right-[6%] z-30 rotate-[5deg] rounded-xl bg-on-brand px-4 py-2.5 text-center shadow-float">
-            <p className="text-[10px] font-extrabold uppercase tracking-[0.12em] text-brand">Feed e Stories</p>
-            <p className="text-[13px] font-black text-white">1080×1350 · 1080×1920</p>
-          </div>
+  
         </div>
       </div>
     </section>

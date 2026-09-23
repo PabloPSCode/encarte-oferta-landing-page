@@ -12,7 +12,7 @@ const FEATURES = [
   {
     icon: MagicWand,
     title: "Temas prontos e gerados com IA",
-    body: "Quase 400 temas organizados por ramo e data comemorativa. Ou informe o título e duas cores e a IA cria um tema exclusivo, já em feed e stories.",
+    body: "Mais de 300 temas organizados por ramo e data comemorativa. Utilize-os diretamente ou gere seu próprio tema com IA.",
   },
   {
     icon: Package,

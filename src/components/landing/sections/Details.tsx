@@ -1,8 +1,8 @@
 import { Check } from "@phosphor-icons/react/dist/ssr";
 
 const DETAILS = [
-  "Prévia em tempo real, com zoom de 50% a 150% enquanto você edita.",
-  "Quatro formatos de preço normal e quatro de preço promocional “de / por”, com parcelamento.",
+  "Ajuste de design da arte com diversas opções de personalização.",
+  "Possibilidade de exibir preços promocionais “de / por” e com parcelamento.",
   "De 1 a 12 produtos por página e até 12 páginas no mesmo encarte.",
   "Validade da oferta impressa na arte: por período, para um dia ou até uma data.",
   "Pix, Visa, Mastercard, VR e Sodexo exibidos no rodapé como formas de pagamento.",
@@ -13,7 +13,7 @@ const DETAILS = [
 
 export default function Details() {
   return (
-    <section className="relative mt-28 overflow-hidden bg-on-brand">
+    <section className="relative mt-28 overflow-hidden bg-accent">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 opacity-[0.07] [background-image:radial-gradient(#FFC814_1.2px,transparent_1.3px)] [background-size:20px_20px]"
@@ -26,22 +26,6 @@ export default function Details() {
           <p className="mt-4 max-w-[460px] text-[16px] leading-relaxed text-white/65 text-pretty">
             Cada detalhe foi pensado para quem publica ofertas toda semana e não pode perder tempo ajustando arte.
           </p>
-
-          {/* etiqueta de preço no estilo dos encartes */}
-          <div aria-hidden className="mt-10 inline-flex -rotate-3 items-stretch overflow-hidden rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.45)]">
-            <div className="flex flex-col justify-center bg-accent px-4 py-3 text-white">
-              <span className="text-[10px] font-extrabold uppercase tracking-[0.14em]">De</span>
-              <span className="text-[16px] font-bold line-through decoration-2">R$ 8,99</span>
-            </div>
-            <div className="flex items-start gap-1 bg-brand px-5 py-3 text-on-brand">
-              <span className="mt-2 text-[14px] font-black">R$</span>
-              <span className="text-[54px] font-black leading-none tracking-[-0.04em]">6</span>
-              <span className="mt-1.5 flex flex-col leading-none">
-                <span className="text-[24px] font-black">,89</span>
-                <span className="mt-1 text-[10px] font-extrabold uppercase tracking-[0.1em]">unid</span>
-              </span>
-            </div>
-          </div>
         </div>
 
         <ul className="grid gap-3 sm:grid-cols-2">
