@@ -6,7 +6,7 @@ import homeHero from "@/assets/flyers/home_hero.webp";
 export default function FinalCta() {
   return (
     <section className="mx-auto max-w-[1200px] px-4 pt-28 sm:px-7">
-      <div className="relative overflow-hidden rounded-[28px] bg-gradient-to-br from-brand to-brand-strong px-5 pb-10 pt-12 text-center shadow-[0_24px_60px_rgba(224,166,0,0.35)] sm:px-12 sm:pb-14">
+      <div className="relative overflow-hidden rounded-[28px] px-5 pb-10 pt-12 text-center sm:px-12 sm:pb-14">
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 opacity-[0.14] [background-image:radial-gradient(#1A1400_1.2px,transparent_1.3px)] [background-size:18px_18px] [mask-image:radial-gradient(ellipse_at_top,black,transparent_70%)]"
@@ -30,10 +30,10 @@ export default function FinalCta() {
           />
         </div>
 
-        <CtaButton href={CTA_LINK} external arrow className="relative mt-10 px-9 py-5 text-[16px]">
+        <CtaButton href={CTA_LINK} external arrow className="relative mt-10 px-9 py-5 text-[16px] text-white">
           Quero criar meus encartes
         </CtaButton>
-        <p className="relative mt-4 text-[12.5px] font-semibold text-on-brand-soft">
+        <p className="relative mt-4 text-[12.5px] font-semibold">
           Atendimento pelo WhatsApp, de segunda a sexta, das 9h às 18h.
         </p>
       </div>

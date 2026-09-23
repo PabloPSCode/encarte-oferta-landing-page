@@ -13,7 +13,7 @@ interface CtaButtonProps {
 }
 
 const styles: Record<Variant, string> = {
-  ink: "bg-on-brand text-brand hover:bg-black",
+  ink: "bg-accent text-white hover:bg-black",
   brand: "bg-gradient-to-br from-brand to-brand-strong text-on-brand shadow-brand hover:brightness-105",
   ghost: "bg-white/75 text-on-brand hover:bg-white",
   accent: "bg-gradient-to-br from-accent to-accent-strong text-white shadow-[0_8px_20px_rgba(210,27,27,0.35)] hover:brightness-110",

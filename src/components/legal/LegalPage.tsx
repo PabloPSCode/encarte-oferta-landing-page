@@ -57,7 +57,7 @@ export default function LegalPage({ eyebrow, title, intro, sections, related }: 
             </nav>
             <Link
               href={related.href}
-              className="mt-4 block rounded-[14px] bg-on-brand px-5 py-4 text-[13px] font-extrabold text-brand hover:bg-black"
+              className="mt-4 block rounded-[14px] bg-accent px-5 py-4 text-[13px] font-extrabold text-white hover:bg-black"
             >
               Leia também: {related.label} →
             </Link>

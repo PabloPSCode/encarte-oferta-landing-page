@@ -21,12 +21,12 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="mt-24 bg-on-brand text-white/80">
+    <footer className="mt-24 bg-accent text-white/80">
       <div className="h-1.5 bg-gradient-to-r from-accent via-accent-hot to-brand" />
       <div className="mx-auto grid max-w-[1200px] gap-12 px-4 py-14 sm:px-7 md:grid-cols-[1.4fr_1fr_1fr_1.3fr]">
         <div>
           <Logo height={32} />
-          <p className="mt-5 max-w-[300px] text-[13.5px] leading-relaxed text-white/60">
+          <p className="mt-5 max-w-[300px] text-[13.5px] leading-relaxed text-white/80">
             Encartes de ofertas prontos em minutos, com vídeo narrado e publicação agendada no Instagram e no Facebook.
           </p>
         </div>
@@ -47,21 +47,21 @@ export default function Footer() {
                 <WhatsappLogo size={20} weight="fill" className="text-[#25D366]" />
                 {SUPPORT.whatsappLabel}
               </a>
-              <p className="mt-1 pl-[30px] text-[12px] text-white/50">{SUPPORT.whatsappHours}</p>
+              <p className="mt-1 pl-[30px] text-[12px] text-white/80">{SUPPORT.whatsappHours}</p>
             </li>
             <li>
               <a href={`mailto:${SUPPORT.email}`} className="inline-flex items-center gap-2.5 font-bold text-white hover:text-brand">
                 <EnvelopeSimple size={20} weight="bold" className="text-brand" />
                 {SUPPORT.email}
               </a>
-              <p className="mt-1 pl-[30px] text-[12px] text-white/50">{SUPPORT.emailHours}</p>
+              <p className="mt-1 pl-[30px] text-[12px] text-white/80">{SUPPORT.emailHours}</p>
             </li>
           </ul>
         </div>
       </div>
 
       <div className="border-t border-white/10">
-        <div className="mx-auto flex max-w-[1200px] flex-col gap-2 px-4 py-6 text-[12px] text-white/50 sm:flex-row sm:items-center sm:justify-between sm:px-7">
+        <div className="mx-auto flex max-w-[1200px] flex-col gap-2 px-4 py-6 text-[12px] text-white/80 sm:flex-row sm:items-center sm:justify-between sm:px-7">
           <p>
             © {year} {SITE.name}. Operado por {COMPANY.legalName}
             {COMPANY.cnpj && ` — CNPJ ${COMPANY.cnpj}`}.

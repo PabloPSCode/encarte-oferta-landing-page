@@ -58,7 +58,7 @@ export const CustomClasses: Story = {
     buttonText: "Ação",
     titleClassName: "text-5xl text-primary-500",
     subtitleClassName: "italic text-white",
-    buttonClassName: "bg-blue-500 hover:bg-on-brand-600",
+    buttonClassName: "bg-blue-500 hover:bg-accent-600",
     sectionClassName: "bg-gradient-to-r from-gray-700 via-gray-900 to-black",
   },
 };
