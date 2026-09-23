@@ -1,32 +1,31 @@
-"use client";
-import LandingHeader from "@/components/elements/LandingHeader";
-import VideoSection from "@/components/elements/VideoSection";
-import Image from "next/image";
+import Header from "@/components/landing/Header";
+import Footer from "@/components/landing/Footer";
+import Hero from "@/components/landing/sections/Hero";
+import Ticker from "@/components/landing/sections/Ticker";
+import Features from "@/components/landing/sections/Features";
+import HowItWorks from "@/components/landing/sections/HowItWorks";
+import Segments from "@/components/landing/sections/Segments";
+import Details from "@/components/landing/sections/Details";
+import Plans from "@/components/landing/sections/Plans";
+import Faq from "@/components/landing/sections/Faq";
+import FinalCta from "@/components/landing/sections/FinalCta";
 
 export default function Home() {
-  const handleVisitDocs = () => {
-    window.open("https://docs.reactultimate.pablosilvadev.com.br", "_blank");
-  };
-
   return (
-    <div className="font-sans overflow-x-hidden">
-      <main className="flex flex-col">
-        <LandingHeader.Root>
-          <LandingHeader.Left>
-            <Image src="/react.png" alt="Logo" width={50} height={50} />
-            <span>NextJS - Tailwind Landing Page Template</span>
-          </LandingHeader.Left>
-        </LandingHeader.Root>
-        <VideoSection
-          description="Template para criação de landing pages utilizando componentes React"
-          videoUrl="/videos/landing-pages.mov"
-          title="NextJS + Tailwind Landing Page Template"
-          size="full"
-          primaryButtonTitle="Explorar documentação"
-          onPrimaryClick={handleVisitDocs}
-          containerClassName="h-[calc(100vh-4.5rem)]"
-        />
+    <div className="overflow-x-clip font-sans">
+      <Header />
+      <main>
+        <Hero />
+        <Ticker />
+        <Features />
+        <HowItWorks />
+        <Segments />
+        <Details />
+        <Plans />
+        <Faq />
+        <FinalCta />
       </main>
+      <Footer />
     </div>
   );
 }
