@@ -9,8 +9,8 @@
 
 export const SITE = {
   name: "Encarte Oferta",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://encarteoferta.com.br",
-  appUrl: process.env.NEXT_PUBLIC_APP_URL ?? "https://app.encarteoferta.com.br",
+  url: process.env.NEXT_PUBLIC_SITE_URL || "https://encarteoferta.com.br",
+  appUrl: process.env.NEXT_PUBLIC_APP_URL || "https://app.encarteoferta.com.br",
 };
 
 /**
@@ -19,10 +19,10 @@ export const SITE = {
  * Campos vazios simplesmente não são exibidos nas páginas legais.
  */
 export const COMPANY = {
-  legalName: process.env.NEXT_PUBLIC_COMPANY_LEGAL_NAME ?? "PLS Sistemas",
-  cnpj: process.env.NEXT_PUBLIC_COMPANY_CNPJ ?? "",
-  address: process.env.NEXT_PUBLIC_COMPANY_ADDRESS ?? "",
-  forum: process.env.NEXT_PUBLIC_COMPANY_FORUM ?? "",
+  legalName: process.env.NEXT_PUBLIC_COMPANY_LEGAL_NAME || "PLS Sistemas",
+  cnpj: process.env.NEXT_PUBLIC_COMPANY_CNPJ || "",
+  address: process.env.NEXT_PUBLIC_COMPANY_ADDRESS || "",
+  forum: process.env.NEXT_PUBLIC_COMPANY_FORUM || "",
 };
 
 export const SUPPORT = {
