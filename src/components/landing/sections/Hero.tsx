@@ -1,9 +1,9 @@
+import hortifruti from "@/assets/flyers/encarte_hortifruit.webp";
+import mercearia from "@/assets/flyers/encarte_mercearia.webp";
+import petshop from "@/assets/flyers/encarte_petshop.webp";
+import { CTA_LINK } from "@/content/site";
 import Image from "next/image";
 import CtaButton from "../CtaButton";
-import { CTA_LINK } from "@/content/site";
-import mercearia from "@/assets/flyers/encarte_mercearia.webp";
-import hortifruti from "@/assets/flyers/encarte_hortifruit.webp";
-import petshop from "@/assets/flyers/encarte_petshop.webp";
 
 const STATS = [
   { value: "4 etapas", label: "do tema à publicação" },

@@ -1,7 +1,7 @@
-import clsx from "clsx";
-import { ArrowsClockwise, CalendarCheck, Coins, Plus } from "@phosphor-icons/react/dist/ssr";
-import Eyebrow from "../Eyebrow";
 import { PLANS, PLANS_LINK, PLAN_QUOTAS, formatBRL, whatsappLink } from "@/content/site";
+import { ArrowsClockwise, CalendarCheck, Coins, Plus } from "@phosphor-icons/react/dist/ssr";
+import clsx from "clsx";
+import Eyebrow from "../Eyebrow";
 
 /** Regras de créditos (encarte-oferta-api: generationQuota.ts, CreditRefillScheduler.ts, faqs.ts). */
 const CREDIT_RULES = [

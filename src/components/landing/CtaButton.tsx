@@ -1,5 +1,5 @@
-import clsx from "clsx";
 import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
+import clsx from "clsx";
 
 type Variant = "ink" | "brand" | "ghost" | "accent";
 

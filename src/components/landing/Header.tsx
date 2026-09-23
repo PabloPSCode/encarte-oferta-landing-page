@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import clsx from "clsx";
-import { List, X } from "@phosphor-icons/react";
-import Logo from "./Logo";
 import { CTA_LINK, SITE } from "@/content/site";
+import { List, X } from "@phosphor-icons/react";
+import clsx from "clsx";
+import { useEffect, useState } from "react";
+import Logo from "./Logo";
 
 const LINKS = [
   { href: "/#recursos", label: "Recursos" },

@@ -1,8 +1,8 @@
-import Link from "next/link";
-import { ArrowLeft } from "@phosphor-icons/react/dist/ssr";
-import Header from "@/components/landing/Header";
 import Footer from "@/components/landing/Footer";
+import Header from "@/components/landing/Header";
 import { LEGAL_UPDATED_AT } from "@/content/site";
+import { ArrowLeft } from "@phosphor-icons/react/dist/ssr";
+import Link from "next/link";
 
 export interface LegalSection {
   id: string;
