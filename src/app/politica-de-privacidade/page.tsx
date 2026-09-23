@@ -282,8 +282,9 @@ const sections: LegalSection[] = [
             permitir a recuperação de exclusões acidentais, a pedido, e para as finalidades do art. 16 da LGPD.
           </li>
           <li>
-            <strong>Eliminação definitiva</strong>: pode ser solicitada a qualquer momento pelo canal <Email />, e será
-            realizada ressalvadas as hipóteses legais de conservação.
+            <strong>Eliminação definitiva</strong>: pode ser solicitada a qualquer momento pelo WhatsApp do suporte, conforme
+            a página <Link href="/exclusao-de-dados">Exclusão de dados</Link>, e será realizada ressalvadas as hipóteses
+            legais de conservação.
           </li>
           <li>
             <strong>Registros de acesso</strong>: mantidos pelo prazo mínimo de 6 meses exigido pelo Marco Civil da Internet
@@ -316,8 +317,8 @@ const sections: LegalSection[] = [
         <p>
           Os tokens de acesso são armazenados de forma criptografada (AES-256-GCM). Você pode desconectar uma conta a
           qualquer momento em <em>Configurações → Conexões</em> ou remover o aplicativo nas configurações da sua conta do
-          Facebook. Nos dois casos a conexão deixa de ser usada. Para solicitar a eliminação dos dados da conexão, escreva
-          para <Email />.
+          Facebook. Nos dois casos a conexão deixa de ser usada. Para solicitar a eliminação dos dados da conexão, siga as
+          instruções da página <Link href="/exclusao-de-dados">Exclusão de dados</Link>.
         </p>
         <p>O uso dessas redes também está sujeito aos termos e à política de privacidade da Meta.</p>
       </>

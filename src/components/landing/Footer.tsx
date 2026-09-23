@@ -14,6 +14,7 @@ const PRODUCT_LINKS = [
 const LEGAL_LINKS = [
   { href: "/termos-de-uso", label: "Termos de Uso" },
   { href: "/politica-de-privacidade", label: "Política de Privacidade" },
+  { href: "/exclusao-de-dados", label: "Exclusão de dados" },
 ];
 
 export default function Footer() {
