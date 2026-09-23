@@ -1,18 +1,20 @@
 import type { ListPlansResponse } from "@/dtos/plans";
 
 /**
- * Registros da tabela `plans` (encarte_oferta_db), no formato devolvido por
- * GET /plans. Usado enquanto NEXT_PUBLIC_API_URL não estiver configurada ou
- * se a API não responder.
+ * Planos no formato devolvido por GET /plans (tabela `plans`), com os valores
+ * da tabela de precificação. Não há preço anual com desconto definido, então
+ * yearValueInCents = 12 × mensal e a página oculta a opção de pagamento anual.
+ * Usado enquanto NEXT_PUBLIC_API_URL não estiver configurada ou se a API não
+ * responder.
  */
 export const plansMock: ListPlansResponse = {
   data: [
     {
       id: "21d7da52-691a-46ec-bab9-93fde8f1412f",
       name: "start",
-      monthValueInCents: 19900,
-      yearValueInCents: 199000,
-      maxFlyerGenerations: 100,
+      monthValueInCents: 18990,
+      yearValueInCents: 227880,
+      maxFlyerGenerations: 20,
       maxAiThemeGenerations: 10,
       maxAiVideoGenerations: 10,
       maxConnections: 4,
@@ -27,9 +29,9 @@ export const plansMock: ListPlansResponse = {
     {
       id: "8a37abd3-2969-4213-9888-29710bfcaee9",
       name: "avançado",
-      monthValueInCents: 26900,
-      yearValueInCents: 269000,
-      maxFlyerGenerations: 200,
+      monthValueInCents: 28990,
+      yearValueInCents: 347880,
+      maxFlyerGenerations: 80,
       maxAiThemeGenerations: 20,
       maxAiVideoGenerations: 20,
       maxConnections: 10,
@@ -44,9 +46,9 @@ export const plansMock: ListPlansResponse = {
     {
       id: "76d26f29-e18f-40bb-b1ae-01363b567026",
       name: "profissional",
-      monthValueInCents: 26900,
-      yearValueInCents: 269000,
-      maxFlyerGenerations: 400,
+      monthValueInCents: 38990,
+      yearValueInCents: 467880,
+      maxFlyerGenerations: 200,
       maxAiThemeGenerations: 40,
       maxAiVideoGenerations: 40,
       maxConnections: 20,
