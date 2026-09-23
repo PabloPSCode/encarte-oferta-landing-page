@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: "Exclusão de dados",
   description:
     "Como solicitar a exclusão dos seus dados do Encarte Oferta, inclusive os dados recebidos do Facebook e do Instagram, pelo WhatsApp do suporte.",
-  alternates: { canonical: "/exclusao-de-dados" },
+  alternates: { canonical: "/meus-dados" },
 };
 
 const DELETION_LINK = whatsappLink(
