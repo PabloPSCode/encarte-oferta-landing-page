@@ -20,7 +20,7 @@ export const SITE = {
  */
 export const COMPANY = {
   legalName: "PLS Sistemas",
-  cnpj: "",
+  cnpj: "47.463.499/0001-37",
   address: "",
   forum: "",
 };
