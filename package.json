@@ -21,6 +21,7 @@
     "@tsparticles/preset-links": "^3.2.0",
     "@tsparticles/preset-stars": "^3.2.0",
     "@tsparticles/react": "^3.0.0",
+    "cep-promise": "^4.4.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "gsap": "^3.13.0",

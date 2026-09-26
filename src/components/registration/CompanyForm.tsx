@@ -11,7 +11,11 @@ import {
 } from "@/dtos/registration";
 import { createCompany, RegistrationError } from "@/services/registration";
 import { isValidCnpj, onlyDigits } from "@/utils/documents";
-import { brazilianCnpjMask, brazilianPhoneOrLandlineMask } from "@/utils/masks";
+import {
+  brazilianCepMask,
+  brazilianCnpjMask,
+  brazilianPhoneOrLandlineMask,
+} from "@/utils/masks";
 import { planTitle } from "@/utils/plans";
 import { emailValidationRegex } from "@/utils/regex";
 import {
@@ -21,7 +25,9 @@ import {
   MapPinIcon,
   StorefrontIcon,
 } from "@phosphor-icons/react";
+import cep from "cep-promise";
 import clsx from "clsx";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { MaskedField, SelectField, TextField } from "./Field";
 import { FormAlert, FormSection, SubmitButton } from "./FormParts";
@@ -34,6 +40,8 @@ interface CompanyFormValues {
   cnpj: string;
   email: string;
   whatsapp: string;
+  /** Só preenche o endereço: a API não guarda o CEP. */
+  cep: string;
   address: string;
   residenceNumber: string;
   district: string;
@@ -46,6 +54,17 @@ const maxLength = (max: number) => ({
   value: max,
   message: `Use no máximo ${max} caracteres.`,
 });
+
+type CepStatus = "idle" | "loading" | "found" | "not-found";
+
+const CEP_HINTS: Record<CepStatus, string> = {
+  idle: "Digite o CEP e preenchemos rua, bairro, cidade e UF para você.",
+  loading: "Buscando o endereço…",
+  found: "Endereço encontrado! Confira os dados e informe o número.",
+  "not-found": "Não encontramos este CEP. Confira os números ou preencha o endereço abaixo.",
+};
+
+const isUf = (value: string): value is Uf => (UFS as readonly string[]).includes(value);
 
 interface CompanyFormProps {
   plans: PlanResponseDTO[];
@@ -63,6 +82,8 @@ export default function CompanyForm({
     control,
     handleSubmit,
     setError,
+    setValue,
+    setFocus,
     watch,
     formState: { errors, isSubmitting },
   } = useForm<CompanyFormValues>({
@@ -75,6 +96,7 @@ export default function CompanyForm({
       cnpj: "",
       email: "",
       whatsapp: "",
+      cep: "",
       address: "",
       residenceNumber: "",
       district: "",
@@ -84,6 +106,39 @@ export default function CompanyForm({
   });
 
   const selectedPlanId = watch("planId");
+  const cepDigits = onlyDigits(watch("cep"));
+  const [cepStatus, setCepStatus] = useState<CepStatus>("idle");
+  const lastCepLookup = useRef("");
+
+  // Busca o endereço assim que o CEP fica completo. Uma resposta atrasada de um CEP anterior é descartada.
+  useEffect(() => {
+    if (cepDigits.length !== 8) {
+      lastCepLookup.current = "";
+      setCepStatus("idle");
+      return;
+    }
+    if (lastCepLookup.current === cepDigits) return;
+    lastCepLookup.current = cepDigits;
+    setCepStatus("loading");
+
+    cep(cepDigits, { providers: ["brasilapi", "viacep", "widenet"], timeout: 8000 })
+      .then((result) => {
+        if (lastCepLookup.current !== cepDigits) return;
+        const fill = (field: "address" | "district" | "city", value: string) => {
+          if (value?.trim()) setValue(field, value.trim(), { shouldValidate: true, shouldDirty: true });
+        };
+        fill("address", result.street);
+        fill("district", result.neighborhood);
+        fill("city", result.city);
+        if (isUf(result.state)) setValue("uf", result.state, { shouldValidate: true, shouldDirty: true });
+        setCepStatus("found");
+        // CEP de cidade inteira não traz rua: o usuário completa a partir dela.
+        setFocus(result.street?.trim() ? "residenceNumber" : "address");
+      })
+      .catch(() => {
+        if (lastCepLookup.current === cepDigits) setCepStatus("not-found");
+      });
+  }, [cepDigits, setValue, setFocus]);
 
   const onSubmit = async (values: CompanyFormValues) => {
     const data: CreateCompanyDTO = {
@@ -310,6 +365,22 @@ export default function CompanyForm({
         title="Endereço da loja"
         description="O endereço da loja física ou da sede da empresa."
       >
+        <MaskedField
+          control={control}
+          name="cep"
+          id="cep"
+          label="CEP"
+          mask={brazilianCepMask}
+          placeholder="00000-000"
+          autoComplete="postal-code"
+          className="sm:max-w-[260px]"
+          hint={CEP_HINTS[cepStatus]}
+          error={errors.cep?.message}
+          rules={{
+            ...required("o CEP"),
+            validate: (v: string) => onlyDigits(v).length === 8 || "O CEP tem 8 números.",
+          }}
+        />
         <div className="grid gap-5 sm:grid-cols-[1fr_140px]">
           <TextField
             id="address"
