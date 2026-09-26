@@ -8,11 +8,13 @@ const cpfValidationRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
 const phoneValidationRegex = /^\+55\d{10,11}$/;
 const phoneWithoutCountryCodeValidationRegex = /\d{10,11}$/;
 const phoneInputValidationRegex = /^\(\d{2}\) \d{5}-\d{4}$/;
+const emailValidationRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const maskedPhoneValidationRegex = /^\(\d{2}\) \d{4,5}-\d{4}$/;
 
 export {
   birthDateValidationRegex,
   cpfValidationRegex,
+  emailValidationRegex,
   lowerCaseRegex,
   maskedPhoneValidationRegex,
   numbersRegex,

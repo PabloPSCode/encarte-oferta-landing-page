@@ -6,3 +6,5 @@ export const brazilianDateMask = '00/00/0000';
 export const creditCardMask = '0000 0000 0000 0000';
 export const creditCardExpiryMask = '00/00';
 export const creditCardCvcMask = '000';
+/** Telefone fixo ou celular: o IMask troca de máscara conforme a quantidade de dígitos. */
+export const brazilianPhoneOrLandlineMask = [{ mask: '(00) 0000-0000' }, { mask: '(00) 00000-0000' }];
