@@ -74,7 +74,7 @@ export default function PlansGrid({ plans }: { plans: PlanResponseDTO[] }) {
         </div>
       )}
 
-      <div className="mt-10 grid items-start gap-5 lg:grid-cols-3">
+      <div className="mt-10 grid items-start gap-5 md:grid-cols-2 xl:grid-cols-3">
         {plans.map((plan) => {
           const title = planTitle(plan);
           const isTop = plan.maxFlyerGenerations === maxFlyers;

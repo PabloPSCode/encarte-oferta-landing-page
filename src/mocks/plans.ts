@@ -2,22 +2,41 @@ import type { ListPlansResponse } from "@/dtos/plans";
 
 /**
  * Planos no formato devolvido por GET /plans (tabela `plans`), com os valores
- * da tabela de precificação. Não há preço anual com desconto definido, então
- * yearValueInCents = 12 × mensal e a página oculta a opção de pagamento anual.
+ * da tabela de precificação de 2026-10-03 (mesmos de `src/data/plans.ts` na
+ * API). O anual é o ano inteiro à vista, com 10% de desconto.
  * Usado enquanto NEXT_PUBLIC_API_URL não estiver configurada ou se a API não
  * responder.
  */
 export const plansMock: ListPlansResponse = {
   data: [
     {
+      id: "5b0c2f7e-3d1a-4c8e-9f6b-2a7d4e1c9b30",
+      name: "free",
+      monthValueInCents: 0,
+      yearValueInCents: 0,
+      maxFlyerGenerations: 10,
+      maxAiThemeGenerations: 2,
+      maxAiVideoGenerations: 3,
+      maxConnections: 3,
+      maxCustomProducts: 20,
+      productBgRemotionInclude: true,
+      instagramIntegration: true,
+      facebookIntegration: true,
+      whatsappIntegration: true,
+      tiktokIntegration: true,
+      createdAt: "2026-10-02T13:01:00.000Z",
+      updatedAt: "2026-10-02T13:01:00.000Z",
+    },
+    {
       id: "21d7da52-691a-46ec-bab9-93fde8f1412f",
       name: "start",
-      monthValueInCents: 18990,
-      yearValueInCents: 227880,
+      monthValueInCents: 13990,
+      yearValueInCents: 151092,
       maxFlyerGenerations: 20,
       maxAiThemeGenerations: 10,
       maxAiVideoGenerations: 10,
       maxConnections: 4,
+      maxCustomProducts: 100,
       productBgRemotionInclude: true,
       instagramIntegration: true,
       facebookIntegration: true,
@@ -29,12 +48,13 @@ export const plansMock: ListPlansResponse = {
     {
       id: "8a37abd3-2969-4213-9888-29710bfcaee9",
       name: "avançado",
-      monthValueInCents: 28990,
-      yearValueInCents: 347880,
-      maxFlyerGenerations: 80,
+      monthValueInCents: 24990,
+      yearValueInCents: 269892,
+      maxFlyerGenerations: 50,
       maxAiThemeGenerations: 20,
       maxAiVideoGenerations: 20,
       maxConnections: 10,
+      maxCustomProducts: 300,
       productBgRemotionInclude: true,
       instagramIntegration: true,
       facebookIntegration: true,
@@ -46,12 +66,13 @@ export const plansMock: ListPlansResponse = {
     {
       id: "76d26f29-e18f-40bb-b1ae-01363b567026",
       name: "profissional",
-      monthValueInCents: 38990,
-      yearValueInCents: 467880,
-      maxFlyerGenerations: 200,
+      monthValueInCents: 45990,
+      yearValueInCents: 496692,
+      maxFlyerGenerations: 150,
       maxAiThemeGenerations: 40,
       maxAiVideoGenerations: 40,
       maxConnections: 20,
+      maxCustomProducts: 1000,
       productBgRemotionInclude: true,
       instagramIntegration: true,
       facebookIntegration: true,

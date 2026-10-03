@@ -1,5 +1,5 @@
 /** Espelha PlanResponseDTO / PlanPresenter de encarte-oferta-api. */
-export type PlanName = "start" | "avançado" | "profissional";
+export type PlanName = "free" | "start" | "avançado" | "profissional";
 
 export interface PlanResponseDTO {
   id: string;
@@ -10,6 +10,8 @@ export interface PlanResponseDTO {
   maxAiThemeGenerations: number;
   maxAiVideoGenerations: number;
   maxConnections: number;
+  /** Cota vitalícia (não mensal). Null em planos criados antes da coluna existir. */
+  maxCustomProducts: number | null;
   productBgRemotionInclude: boolean;
   instagramIntegration: boolean;
   facebookIntegration: boolean;

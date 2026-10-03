@@ -24,13 +24,20 @@ export function monthlyEquivalentInCents(plan: PlanResponseDTO) {
   return Math.round(plan.yearValueInCents / 12);
 }
 
+/** A cota de produtos personalizados só aparece quando o plano a define. */
 export function planAllowances(plan: PlanResponseDTO) {
-  return [
+  const allowances = [
     { label: "Encartes por mês", value: plan.maxFlyerGenerations },
     { label: "Temas com IA por mês", value: plan.maxAiThemeGenerations },
     { label: "Vídeos com IA por mês", value: plan.maxAiVideoGenerations },
     { label: "Contas conectadas", value: plan.maxConnections },
   ];
+
+  if (plan.maxCustomProducts !== null) {
+    allowances.push({ label: "Produtos personalizados", value: plan.maxCustomProducts });
+  }
+
+  return allowances;
 }
 
 /**
