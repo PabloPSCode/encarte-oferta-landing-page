@@ -10,8 +10,8 @@ export interface PlanResponseDTO {
   maxAiThemeGenerations: number;
   maxAiVideoGenerations: number;
   maxConnections: number;
-  /** Cota vitalícia (não mensal). Null em planos criados antes da coluna existir. */
-  maxCustomProducts: number | null;
+  /** Cota vitalícia (não mensal). Null ou ausente quando a API ainda não tem a coluna. */
+  maxCustomProducts?: number | null;
   productBgRemotionInclude: boolean;
   instagramIntegration: boolean;
   facebookIntegration: boolean;

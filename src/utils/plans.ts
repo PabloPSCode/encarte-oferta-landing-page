@@ -1,4 +1,4 @@
-import type { PlanName, PlanResponseDTO } from "@/dtos/plans";
+import type { PlanResponseDTO } from "@/dtos/plans";
 
 /**
  * Regras de exibição dos planos, as mesmas da tela de planos do app
@@ -33,18 +33,15 @@ export function planAllowances(plan: PlanResponseDTO) {
     { label: "Contas conectadas", value: plan.maxConnections },
   ];
 
-  if (plan.maxCustomProducts !== null) {
-    allowances.push({ label: "Produtos personalizados", value: plan.maxCustomProducts });
+  if (plan.maxCustomProducts != null) {
+    allowances.push({
+      label: "Produtos personalizados",
+      value: plan.maxCustomProducts,
+    });
   }
 
   return allowances;
 }
-
-/**
- * Recurso ainda sem coluna na tabela `plans`: liberado por nome de plano até
- * a API passar a informá-lo.
- */
-const SMART_PRODUCT_PLANS: PlanName[] = ["avançado", "profissional"];
 
 /**
  * Itens incluídos ou não. WhatsApp é envio por link (não há integração de
@@ -53,11 +50,17 @@ const SMART_PRODUCT_PLANS: PlanName[] = ["avançado", "profissional"];
  */
 export function planInclusions(plan: PlanResponseDTO) {
   return [
-    { label: "Remoção de fundo dos produtos", included: plan.productBgRemotionInclude },
+    {
+      label: "Remoção de fundo dos produtos",
+      included: plan.productBgRemotionInclude,
+    },
     { label: "Publicação no Instagram", included: plan.instagramIntegration },
     { label: "Publicação no Facebook", included: plan.facebookIntegration },
     { label: "Envio pelo WhatsApp", included: plan.whatsappIntegration },
-    { label: "Publicação no TikTok (em breve)", included: plan.tiktokIntegration },
-    { label: "Cadastro inteligente de produtos (em breve)", included: SMART_PRODUCT_PLANS.includes(plan.name) },
+    {
+      label: "Publicação no TikTok (em breve)",
+      included: plan.tiktokIntegration,
+    },
+    { label: "Cadastro inteligente de produtos (em breve)", included: true },
   ];
 }

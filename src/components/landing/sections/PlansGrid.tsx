@@ -1,6 +1,6 @@
 "use client";
 
-import type { PlanResponseDTO } from "@/dtos/plans";
+import type { PlanName, PlanResponseDTO } from "@/dtos/plans";
 import { formatBRL, whatsappLink } from "@/content/site";
 import {
   annualDiscountPercentage,
@@ -15,13 +15,15 @@ import { useState } from "react";
 
 type Cycle = "month" | "year";
 
+/** Plano destacado com o selo "Mais popular". */
+const POPULAR_PLAN: PlanName = "avançado";
+
 export default function PlansGrid({ plans }: { plans: PlanResponseDTO[] }) {
   const [cycle, setCycle] = useState<Cycle>("month");
   const bestDiscount = Math.max(
     0,
     ...plans.map((p) => annualDiscountPercentage(p) ?? 0),
   );
-  const maxFlyers = Math.max(...plans.map((p) => p.maxFlyerGenerations));
   const hasAnnualOffer = bestDiscount > 0;
 
   return (
@@ -77,7 +79,7 @@ export default function PlansGrid({ plans }: { plans: PlanResponseDTO[] }) {
       <div className="mt-10 grid items-start gap-5 md:grid-cols-2 xl:grid-cols-3">
         {plans.map((plan) => {
           const title = planTitle(plan);
-          const isTop = plan.maxFlyerGenerations === maxFlyers;
+          const isPopular = plan.name === POPULAR_PLAN;
           const discount = annualDiscountPercentage(plan);
           const isYear = hasAnnualOffer && cycle === "year";
 
@@ -86,14 +88,14 @@ export default function PlansGrid({ plans }: { plans: PlanResponseDTO[] }) {
               key={plan.id}
               className={clsx(
                 "relative flex flex-col rounded-[22px] bg-surface p-7",
-                isTop
+                isPopular
                   ? "border-2 border-brand shadow-[0_18px_44px_rgba(224,166,0,0.22)] lg:-mt-4 lg:pb-10"
                   : "border border-line",
               )}
             >
-              {isTop && (
+              {isPopular && (
                 <span className="absolute -top-3.5 left-[50%] -translate-x-1/2 rounded-full bg-accent px-3 py-1 text-[10.5px] font-extrabold uppercase tracking-[0.08em] text-white">
-                  Mais completo
+                  Mais popular
                 </span>
               )}
               <h3 className="text-[22px] font-black tracking-[-0.02em] text-ink">
@@ -188,7 +190,7 @@ export default function PlansGrid({ plans }: { plans: PlanResponseDTO[] }) {
                 rel="noopener noreferrer"
                 className={clsx(
                   "mt-7 rounded-[12px] px-5 py-3.5 text-center text-[14px] font-extrabold transition-all",
-                  isTop
+                  isPopular
                     ? "bg-gradient-to-br from-brand to-brand-strong text-on-brand shadow-brand hover:brightness-105"
                     : "bg-accent text-white hover:bg-black",
                 )}
