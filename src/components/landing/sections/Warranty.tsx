@@ -27,7 +27,7 @@ export default async function Warranty() {
           <p className="mt-4 max-w-[720px] text-[16px] leading-relaxed text-ink-2 text-pretty">
             Tranquilidade para você decidir do lado de dentro, usando todos os recursos e toda a cota do plano. Se em até{" "}
             {REFUND_POLICY.days} dias você achar que não é para você, é só cancelar: o reembolso é processado
-            automaticamente, e descontamos apenas os vídeos com IA gerados no período ({formatBRL(charge)} por vídeo).
+            automaticamente, e descontamos apenas os vídeos com IA gerados no período.
           </p>
           <Link
             href={REFUND_POLICY.href}
