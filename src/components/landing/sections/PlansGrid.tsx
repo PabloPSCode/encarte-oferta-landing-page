@@ -1,16 +1,18 @@
 "use client";
 
 import type { PlanName, PlanResponseDTO } from "@/dtos/plans";
-import { formatBRL, whatsappLink } from "@/content/site";
+import { REFUND_POLICY, formatBRL, whatsappLink } from "@/content/site";
 import {
   annualDiscountPercentage,
   monthlyEquivalentInCents,
   planAllowances,
   planInclusions,
   planTitle,
+  videoRefundChargeOf,
 } from "@/utils/plans";
 import { Check, Minus } from "@phosphor-icons/react";
 import clsx from "clsx";
+import Link from "next/link";
 import { useState } from "react";
 
 type Cycle = "month" | "year";
@@ -201,6 +203,15 @@ export default function PlansGrid({ plans }: { plans: PlanResponseDTO[] }) {
           );
         })}
       </div>
+
+      <p className="mt-6 text-center text-[13px] leading-relaxed text-ink-2 text-pretty">
+        <strong className="text-ink">Garantia de {REFUND_POLICY.days} dias:</strong> cancele nesse prazo e devolvemos o
+        valor pago, descontando apenas os vídeos com IA gerados no período (
+        {formatBRL(videoRefundChargeOf(plans))} por vídeo).{" "}
+        <Link href={REFUND_POLICY.href} className="font-extrabold text-accent hover:underline">
+          Política de Cancelamento
+        </Link>
+      </p>
 
       <article className="mt-5 flex flex-col gap-6 rounded-[22px] border border-dashed border-brand-strong bg-brand-tint/60 p-7 md:flex-row md:items-center md:justify-between">
         <div className="max-w-[640px]">

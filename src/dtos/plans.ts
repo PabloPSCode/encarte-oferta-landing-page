@@ -12,6 +12,11 @@ export interface PlanResponseDTO {
   maxConnections: number;
   /** Cota vitalícia (não mensal). Null ou ausente quando a API ainda não tem a coluna. */
   maxCustomProducts?: number | null;
+  /**
+   * Desconto por vídeo com IA gerado nos 7 dias de garantia, em centavos, no
+   * reembolso de um cancelamento. Ausente quando a API ainda não tem a coluna.
+   */
+  videoRefundChargeInCents?: number;
   productBgRemotionInclude: boolean;
   instagramIntegration: boolean;
   facebookIntegration: boolean;

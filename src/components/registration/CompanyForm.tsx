@@ -1,6 +1,6 @@
 "use client";
 
-import { formatBRL } from "@/content/site";
+import { REFUND_POLICY, formatBRL } from "@/content/site";
 import type { PlanResponseDTO } from "@/dtos/plans";
 import {
   ESTABILISHMENTS,
@@ -16,7 +16,7 @@ import {
   brazilianCnpjMask,
   brazilianPhoneOrLandlineMask,
 } from "@/utils/masks";
-import { planTitle } from "@/utils/plans";
+import { planTitle, videoRefundChargeOf } from "@/utils/plans";
 import { emailValidationRegex } from "@/utils/regex";
 import {
   BuildingsIcon,
@@ -256,6 +256,19 @@ export default function CompanyForm({
               {errors.planId.message}
             </p>
           )}
+          <p className="mt-3 text-[12.5px] leading-relaxed text-ink-soft">
+            Planos pagos têm garantia de {REFUND_POLICY.days} dias: se cancelar nesse prazo, devolvemos o valor pago,
+            descontando {formatBRL(videoRefundChargeOf(plans))} por vídeo com IA gerado no período. Depois disso, não há
+            reembolso.{" "}
+            <a
+              href={REFUND_POLICY.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-bold text-accent hover:underline"
+            >
+              Política de Cancelamento
+            </a>
+          </p>
         </fieldset>
 
         <SelectField

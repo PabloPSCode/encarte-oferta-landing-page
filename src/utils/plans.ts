@@ -1,4 +1,5 @@
 import type { PlanResponseDTO } from "@/dtos/plans";
+import { REFUND_POLICY } from "@/content/site";
 
 /**
  * Regras de exibição dos planos, as mesmas da tela de planos do app
@@ -63,4 +64,16 @@ export function planInclusions(plan: PlanResponseDTO) {
     },
     { label: "Cadastro inteligente de produtos (em breve)", included: true },
   ];
+}
+
+/**
+ * Desconto por vídeo com IA no reembolso da garantia: o valor do primeiro plano
+ * pago que o informa, ou o padrão da política quando a API ainda não o envia.
+ */
+export function videoRefundChargeOf(plans: PlanResponseDTO[]): number {
+  const charge = plans.find(
+    (plan) => plan.monthValueInCents > 0 && (plan.videoRefundChargeInCents ?? 0) > 0,
+  )?.videoRefundChargeInCents;
+
+  return charge ?? REFUND_POLICY.defaultVideoChargeInCents;
 }

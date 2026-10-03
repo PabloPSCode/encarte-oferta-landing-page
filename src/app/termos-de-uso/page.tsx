@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import LegalPage, { type LegalSection } from "@/components/legal/LegalPage";
-import { COMPANY, SITE, SUPPORT } from "@/content/site";
+import { COMPANY, REFUND_POLICY, SITE, SUPPORT } from "@/content/site";
 
 export const metadata: Metadata = {
   title: "Termos de Uso",
@@ -177,8 +177,13 @@ const sections: LegalSection[] = [
             pelo e-mail <Email />.
           </li>
           <li>
-            No cancelamento, o acesso permanece até o fim do ciclo já pago e não há cobrança de multa. Não há devolução
-            proporcional de períodos já iniciados, salvo quando exigido por lei ou acordado por escrito.
+            Cancelamentos feitos em até {REFUND_POLICY.days} dias da contratação são reembolsados automaticamente,
+            descontando cada vídeo com IA gerado no período, conforme a{" "}
+            <Link href={REFUND_POLICY.href}>Política de Cancelamento</Link>.
+          </li>
+          <li>
+            Depois desse prazo, o acesso permanece até o fim do ciclo já pago e não há cobrança de multa. Não há
+            devolução, nem proporcional, de períodos já iniciados, salvo quando exigido por lei ou acordado por escrito.
           </li>
           <li>
             Quando aplicável, fica assegurado o direito de arrependimento em até 7 dias da contratação, previsto no art. 49
@@ -423,6 +428,7 @@ export default function TermsOfUsePage() {
     <LegalPage
       eyebrow="Documento legal"
       title="Termos de Uso"
+      updatedAt="3 de outubro de 2026"
       related={{ href: "/politica-de-privacidade", label: "Política de Privacidade" }}
       intro={
         <p>

@@ -16,9 +16,11 @@ interface LegalPageProps {
   intro: React.ReactNode;
   sections: LegalSection[];
   related: { href: string; label: string };
+  /** Data da última atualização deste documento. Padrão: `LEGAL_UPDATED_AT`. */
+  updatedAt?: string;
 }
 
-export default function LegalPage({ eyebrow, title, intro, sections, related }: LegalPageProps) {
+export default function LegalPage({ eyebrow, title, intro, sections, related, updatedAt = LEGAL_UPDATED_AT }: LegalPageProps) {
   return (
     <div className="overflow-x-clip font-sans">
       <Header />
@@ -35,7 +37,7 @@ export default function LegalPage({ eyebrow, title, intro, sections, related }: 
             <p className="mt-8 text-[11.5px] font-extrabold uppercase tracking-[0.12em] text-brand-ink">{eyebrow}</p>
             <h1 className="mt-2 text-[36px] font-black leading-[1.05] tracking-[-0.035em] text-on-brand sm:text-[52px]">{title}</h1>
             <p className="mt-4 inline-flex rounded-full bg-white/75 px-3.5 py-1.5 text-[12.5px] font-bold text-on-brand-soft">
-              Última atualização: {LEGAL_UPDATED_AT}
+              Última atualização: {updatedAt}
             </p>
           </div>
         </section>

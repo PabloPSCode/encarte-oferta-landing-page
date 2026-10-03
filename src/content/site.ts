@@ -35,6 +35,20 @@ export const SUPPORT = {
 
 export const LEGAL_UPDATED_AT = "23 de setembro de 2026";
 
+/**
+ * Política de cancelamento (encarte-oferta-api: src/domain/companies/
+ * trialPeriod.ts e refundPolicy.ts). Cancelado em até 7 dias da contratação, o
+ * plano é reembolsado descontando cada vídeo com IA gerado no período; depois
+ * disso, não há reembolso e o acesso segue até o fim do ciclo pago.
+ */
+export const REFUND_POLICY = {
+  days: 7,
+  href: "/politica-de-cancelamento",
+  /** Usado quando a API não informa `videoRefundChargeInCents` (R$ 2,89). */
+  defaultVideoChargeInCents: 289,
+  updatedAt: "3 de outubro de 2026",
+};
+
 export function whatsappLink(message: string) {
   return `https://wa.me/${SUPPORT.whatsapp}?text=${encodeURIComponent(message)}`;
 }
@@ -90,6 +104,10 @@ export const FAQ = [
   {
     q: "Posso ter mais de uma pessoa usando a conta?",
     a: "Sim. Cada empresa tem um administrador, que cria os usuários da equipe. Os usuários criam encartes, vídeos, produtos, temas, conexões e agendamentos.",
+  },
+  {
+    q: "Posso cancelar? Tem reembolso?",
+    a: "Sim, a qualquer momento. Se cancelar em até 7 dias da contratação, devolvemos o valor pago, descontando apenas os vídeos com IA gerados nesse período. Depois disso, não há reembolso e o acesso continua até o fim do ciclo já pago. Os detalhes estão na Política de Cancelamento.",
   },
   {
     q: "Posso mudar o ramo de atividade depois?",
