@@ -4,10 +4,12 @@ import Hero from "@/components/landing/sections/Hero";
 import Ticker from "@/components/landing/sections/Ticker";
 import Features from "@/components/landing/sections/Features";
 import HowItWorks from "@/components/landing/sections/HowItWorks";
+import VideoShowcase from "@/components/landing/sections/VideoShowcase";
 import Segments from "@/components/landing/sections/Segments";
 import Details from "@/components/landing/sections/Details";
 import Plans from "@/components/landing/sections/Plans";
 import Faq from "@/components/landing/sections/Faq";
+import Warranty from "@/components/landing/sections/Warranty";
 import FinalCta from "@/components/landing/sections/FinalCta";
 
 export default function Home() {
@@ -19,10 +21,12 @@ export default function Home() {
         <Ticker />
         <Features />
         <HowItWorks />
+        <VideoShowcase />
         <Segments />
         <Details />
         <Plans />
         <Faq />
+        <Warranty />
         <FinalCta />
       </main>
       <Footer />
