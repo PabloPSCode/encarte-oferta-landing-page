@@ -47,6 +47,10 @@ export interface CreateCompanyDTO {
 
 export interface CompanyResponseDTO extends CreateCompanyDTO {
   id: string;
+  /** Teste de 7 dias com 50% da cota de IA e produtos. Sempre false no plano free. */
+  isTrialPeriod: boolean;
+  /** Fim do teste: 7 dias após `createdAt`, em ISO 8601. */
+  trialEndsAt: string;
   createdAt: string;
   updatedAt: string;
 }
