@@ -11,9 +11,9 @@ export default function FinalCta() {
           aria-hidden
           className="pointer-events-none absolute inset-0 opacity-[0.14] [background-image:radial-gradient(#1A1400_1.2px,transparent_1.3px)] [background-size:18px_18px] [mask-image:radial-gradient(ellipse_at_top,black,transparent_70%)]"
         />
-        <div className="relative mx-auto max-w-[720px]">
+        <div className="relative mx-auto">
           <h2 className="text-[32px] font-black leading-[1.08] tracking-[-0.035em] text-on-brand text-balance sm:text-[46px]">
-            Publique sua próxima oferta hoje mesmo
+            Não fique de fora da transformação digital! Publique sua próxima oferta hoje mesmo
           </h2>
           <p className="mx-auto mt-4 max-w-[560px] text-[16px] font-medium leading-relaxed text-on-brand-soft text-pretty">
             Fale com a nossa equipe, escolha o plano, conecte suas redes e coloque o encarte no ar antes do próximo fim de
