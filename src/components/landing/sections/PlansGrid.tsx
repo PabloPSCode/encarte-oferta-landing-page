@@ -107,26 +107,32 @@ export default function PlansGrid({ plans }: { plans: PlanResponseDTO[] }) {
               <div className="mt-4 flex items-baseline gap-1.5">
                 <span className="text-[34px] font-black tracking-[-0.03em] text-ink">
                   {formatBRL(
-                    isYear ? plan.yearValueInCents : plan.monthValueInCents,
+                    isYear
+                      ? monthlyEquivalentInCents(plan)
+                      : plan.monthValueInCents,
                   )}
                 </span>
                 <span className="text-[13px] font-bold text-ink-soft">
-                  {isYear ? "/ano" : "/mês"}
+                  /mês
                 </span>
               </div>
+              {/* O preço em destaque é sempre por mês; o total do ano aparece só
+                  em letra pequena, logo abaixo. */}
               <p className="mt-1 min-h-[20px] text-[12.5px] text-ink-soft">
-                {isYear ? (
+                {isYear && discount ? (
                   <>
-                    equivale a {formatBRL(monthlyEquivalentInCents(plan))}/mês
-                    {discount && (
-                      <strong className="ml-1.5 font-extrabold text-accent">
-                        -{discount}%
-                      </strong>
-                    )}
+                    <span className="line-through">
+                      {formatBRL(plan.monthValueInCents)}
+                    </span>{" "}
+                    no plano anual
+                    <strong className="ml-1.5 font-extrabold text-accent">
+                      -{discount}%
+                    </strong>
                   </>
                 ) : discount ? (
                   <>
-                    ou {formatBRL(plan.yearValueInCents)}/ano,{" "}
+                    ou {formatBRL(monthlyEquivalentInCents(plan))}/mês no plano
+                    anual,{" "}
                     <strong className="font-extrabold text-accent">
                       economize {discount}%
                     </strong>
@@ -135,6 +141,11 @@ export default function PlansGrid({ plans }: { plans: PlanResponseDTO[] }) {
                   <>Cobrança mensal</>
                 )}
               </p>
+              {plan.yearValueInCents > 0 && (
+                <p className="mt-0.5 text-[11.5px] text-ink-soft">
+                  Plano anual: {formatBRL(plan.yearValueInCents)}/ano
+                </p>
+              )}
 
               <div className="my-6 h-px bg-line" />
 
@@ -205,10 +216,16 @@ export default function PlansGrid({ plans }: { plans: PlanResponseDTO[] }) {
       </div>
 
       <p className="mt-6 text-center text-[13px] leading-relaxed text-ink-2 text-pretty">
-        <strong className="text-ink">Garantia de {REFUND_POLICY.days} dias:</strong> cancele nesse prazo e devolvemos o
-        valor pago, descontando apenas os vídeos com IA gerados no período (
+        <strong className="text-ink">
+          Garantia de {REFUND_POLICY.days} dias:
+        </strong>{" "}
+        cancele nesse prazo e devolvemos o valor pago, descontando apenas os
+        vídeos com IA gerados no período (
         {formatBRL(videoRefundChargeOf(plans))} por vídeo).{" "}
-        <Link href={REFUND_POLICY.href} className="font-extrabold text-accent hover:underline">
+        <Link
+          href={REFUND_POLICY.href}
+          className="font-extrabold text-accent hover:underline"
+        >
           Política de Cancelamento
         </Link>
       </p>
