@@ -2,7 +2,7 @@ import type { ListPlansResponse } from "@/dtos/plans";
 
 /**
  * Planos no formato devolvido por GET /plans (tabela `plans`), com os valores
- * da tabela de precificação de 2026-10-03 (mesmos de `src/data/plans.ts` na
+ * da tabela de precificação de 2026-10-06 (mesmos de `src/data/plans.ts` na
  * API). O anual é o ano inteiro à vista, com 10% de desconto.
  * Usado enquanto NEXT_PUBLIC_API_URL não estiver configurada ou se a API não
  * responder.
@@ -31,8 +31,8 @@ export const plansMock: ListPlansResponse = {
     {
       id: "21d7da52-691a-46ec-bab9-93fde8f1412f",
       name: "start",
-      monthValueInCents: 13990,
-      yearValueInCents: 151092,
+      monthValueInCents: 15990,
+      yearValueInCents: 172692,
       maxFlyerGenerations: 20,
       maxAiThemeGenerations: 10,
       maxAiVideoGenerations: 10,
@@ -50,8 +50,8 @@ export const plansMock: ListPlansResponse = {
     {
       id: "8a37abd3-2969-4213-9888-29710bfcaee9",
       name: "avançado",
-      monthValueInCents: 24990,
-      yearValueInCents: 269892,
+      monthValueInCents: 25990,
+      yearValueInCents: 280692,
       maxFlyerGenerations: 50,
       maxAiThemeGenerations: 20,
       maxAiVideoGenerations: 20,
