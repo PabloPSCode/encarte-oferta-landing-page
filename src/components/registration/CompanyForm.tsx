@@ -5,6 +5,7 @@ import type { PlanResponseDTO } from "@/dtos/plans";
 import {
   ESTABILISHMENTS,
   UFS,
+  type BillingCycle,
   type CreateCompanyDTO,
   type Estabilishment,
   type Uf,
@@ -16,7 +17,12 @@ import {
   brazilianCnpjMask,
   brazilianPhoneOrLandlineMask,
 } from "@/utils/masks";
-import { planTitle, videoRefundChargeOf } from "@/utils/plans";
+import {
+  annualDiscountPercentage,
+  monthlyEquivalentInCents,
+  planTitle,
+  videoRefundChargeOf,
+} from "@/utils/plans";
 import { emailValidationRegex } from "@/utils/regex";
 import {
   BuildingsIcon,
@@ -34,6 +40,7 @@ import { FormAlert, FormSection, SubmitButton } from "./FormParts";
 
 interface CompanyFormValues {
   planId: string;
+  billingCycle: BillingCycle;
   estabilishment: Estabilishment | "";
   socialReason: string;
   fantasyName: string;
@@ -61,20 +68,30 @@ const CEP_HINTS: Record<CepStatus, string> = {
   idle: "Digite o CEP e preenchemos rua, bairro, cidade e UF para você.",
   loading: "Buscando o endereço…",
   found: "Endereço encontrado! Confira os dados e informe o número.",
-  "not-found": "Não encontramos este CEP. Confira os números ou preencha o endereço abaixo.",
+  "not-found":
+    "Não encontramos este CEP. Confira os números ou preencha o endereço abaixo.",
 };
 
-const isUf = (value: string): value is Uf => (UFS as readonly string[]).includes(value);
+const isUf = (value: string): value is Uf =>
+  (UFS as readonly string[]).includes(value);
 
 interface CompanyFormProps {
   plans: PlanResponseDTO[];
   defaultPlanId?: string;
-  onCreated: (companyId: string) => void;
+  defaultBillingCycle?: BillingCycle;
+  /** A empresa foi criada: o cadastro segue para o pagamento no ciclo escolhido. */
+  onCreated: (companyId: string, billingCycle: BillingCycle) => void;
 }
+
+const BILLING_CYCLES: { value: BillingCycle; label: string }[] = [
+  { value: "monthly", label: "Mensal" },
+  { value: "yearly", label: "Anual" },
+];
 
 export default function CompanyForm({
   plans,
   defaultPlanId,
+  defaultBillingCycle = "monthly",
   onCreated,
 }: CompanyFormProps) {
   const {
@@ -90,6 +107,7 @@ export default function CompanyForm({
     mode: "onBlur",
     defaultValues: {
       planId: defaultPlanId ?? "",
+      billingCycle: defaultBillingCycle,
       estabilishment: "",
       socialReason: "",
       fantasyName: "",
@@ -106,6 +124,11 @@ export default function CompanyForm({
   });
 
   const selectedPlanId = watch("planId");
+  const billingCycle = watch("billingCycle");
+  const bestDiscount = Math.max(
+    0,
+    ...plans.map((plan) => annualDiscountPercentage(plan) ?? 0),
+  );
   const cepDigits = onlyDigits(watch("cep"));
   const [cepStatus, setCepStatus] = useState<CepStatus>("idle");
   const lastCepLookup = useRef("");
@@ -121,16 +144,30 @@ export default function CompanyForm({
     lastCepLookup.current = cepDigits;
     setCepStatus("loading");
 
-    cep(cepDigits, { providers: ["brasilapi", "viacep", "widenet"], timeout: 8000 })
+    cep(cepDigits, {
+      providers: ["brasilapi", "viacep", "widenet"],
+      timeout: 8000,
+    })
       .then((result) => {
         if (lastCepLookup.current !== cepDigits) return;
-        const fill = (field: "address" | "district" | "city", value: string) => {
-          if (value?.trim()) setValue(field, value.trim(), { shouldValidate: true, shouldDirty: true });
+        const fill = (
+          field: "address" | "district" | "city",
+          value: string,
+        ) => {
+          if (value?.trim())
+            setValue(field, value.trim(), {
+              shouldValidate: true,
+              shouldDirty: true,
+            });
         };
         fill("address", result.street);
         fill("district", result.neighborhood);
         fill("city", result.city);
-        if (isUf(result.state)) setValue("uf", result.state, { shouldValidate: true, shouldDirty: true });
+        if (isUf(result.state))
+          setValue("uf", result.state, {
+            shouldValidate: true,
+            shouldDirty: true,
+          });
         setCepStatus("found");
         // CEP de cidade inteira não traz rua: o usuário completa a partir dela.
         setFocus(result.street?.trim() ? "residenceNumber" : "address");
@@ -158,7 +195,7 @@ export default function CompanyForm({
 
     try {
       const company = await createCompany(data);
-      onCreated(company.id);
+      onCreated(company.id, values.billingCycle);
     } catch (error) {
       const err =
         error instanceof RegistrationError
@@ -198,8 +235,48 @@ export default function CompanyForm({
       <FormSection
         icon={StorefrontIcon}
         title="Plano e ramo de atividade"
-        description="Escolha o plano que combina com o volume de ofertas da sua loja. Você pode trocar de plano depois, direto no app."
+        description="Escolha o plano e a forma de cobrança. O pagamento é feito no próximo passo, com cartão de crédito, e você pode trocar de plano depois, direto no app."
       >
+        <fieldset className="mb-4">
+          <legend className="mb-2 text-[13px] font-extrabold text-ink">
+            Cobrança
+          </legend>
+          <div className="inline-flex rounded-full border border-line bg-surface p-1">
+            {BILLING_CYCLES.map(({ value, label }) => (
+              <label
+                key={value}
+                className={clsx(
+                  "flex cursor-pointer items-center gap-2 rounded-full px-5 py-2 text-[13.5px] font-extrabold transition-colors",
+                  "has-[:focus-visible]:ring-4 has-[:focus-visible]:ring-brand/30",
+                  billingCycle === value
+                    ? "bg-on-brand text-brand"
+                    : "text-ink-2 hover:text-ink",
+                )}
+              >
+                <input
+                  type="radio"
+                  value={value}
+                  className="sr-only"
+                  {...register("billingCycle")}
+                />
+                {label}
+                {value === "yearly" && bestDiscount > 0 && (
+                  <span
+                    className={clsx(
+                      "rounded-full px-2 py-0.5 text-[10.5px] font-extrabold",
+                      billingCycle === "yearly"
+                        ? "bg-brand text-on-brand"
+                        : "bg-accent-tint text-accent",
+                    )}
+                  >
+                    -{bestDiscount}%
+                  </span>
+                )}
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
         <fieldset aria-describedby={errors.planId ? "planId-error" : undefined}>
           <legend className="sr-only">Plano</legend>
           <div className="grid gap-3 sm:grid-cols-3">
@@ -237,9 +314,23 @@ export default function CompanyForm({
                     )}
                   </span>
                   <span className="text-[13px] font-bold text-ink-2">
-                    {formatBRL(plan.monthValueInCents)}
+                    {formatBRL(
+                      billingCycle === "yearly"
+                        ? monthlyEquivalentInCents(plan)
+                        : plan.monthValueInCents,
+                    )}
                     <span className="font-semibold text-ink-soft">/mês</span>
                   </span>
+                  {billingCycle === "yearly" && (
+                    <span className="text-[12px] text-ink-soft">
+                      no plano anual
+                    </span>
+                  )}
+                  {plan.yearValueInCents > 0 && (
+                    <span className="text-[11px] text-ink-soft">
+                      Plano anual: {formatBRL(plan.yearValueInCents)}/ano
+                    </span>
+                  )}
                   <span className="text-[12px] text-ink-soft">
                     {plan.maxFlyerGenerations} encartes por mês
                   </span>
@@ -257,9 +348,10 @@ export default function CompanyForm({
             </p>
           )}
           <p className="mt-3 text-[12.5px] leading-relaxed text-ink-soft">
-            Planos pagos têm garantia de {REFUND_POLICY.days} dias: se cancelar nesse prazo, devolvemos o valor pago,
-            descontando {formatBRL(videoRefundChargeOf(plans))} por vídeo com IA gerado no período. Depois disso, não há
-            reembolso.{" "}
+            Planos pagos têm garantia de {REFUND_POLICY.days} dias: se cancelar
+            nesse prazo, devolvemos o valor pago, descontando{" "}
+            {formatBRL(videoRefundChargeOf(plans))} por vídeo com IA gerado no
+            período. Depois disso, não há reembolso.{" "}
             <a
               href={REFUND_POLICY.href}
               target="_blank"
@@ -391,7 +483,8 @@ export default function CompanyForm({
           error={errors.cep?.message}
           rules={{
             ...required("o CEP"),
-            validate: (v: string) => onlyDigits(v).length === 8 || "O CEP tem 8 números.",
+            validate: (v: string) =>
+              onlyDigits(v).length === 8 || "O CEP tem 8 números.",
           }}
         />
         <div className="grid gap-5 sm:grid-cols-[1fr_140px]">

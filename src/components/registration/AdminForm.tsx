@@ -32,9 +32,11 @@ interface AdminFormProps {
   companyId: string;
   onCreated: (result: AdminCreatedResult) => void;
   onCompanyUnavailable: (reason: AdminFailure, message: string) => void;
+  /** A API ainda não vê o pagamento do plano: o cadastro volta ao passo do pagamento. */
+  onPaymentRequired: (message: string) => void;
 }
 
-export default function AdminForm({ companyId, onCreated, onCompanyUnavailable }: AdminFormProps) {
+export default function AdminForm({ companyId, onCreated, onCompanyUnavailable, onPaymentRequired }: AdminFormProps) {
   const {
     register,
     control,
@@ -67,6 +69,7 @@ export default function AdminForm({ companyId, onCreated, onCompanyUnavailable }
 
       if (err.apiMessage === "Company not found") return onCompanyUnavailable("company-not-found", err.message);
       if (err.apiMessage === "This company already has an admin") return onCompanyUnavailable("company-has-admin", err.message);
+      if (err.apiMessage === "The company plan must be paid before creating the admin") return onPaymentRequired(err.message);
 
       for (const field of Object.keys(err.fieldErrors)) {
         if (field in values) setError(field as keyof AdminFormValues, { message: "Confira este campo." });

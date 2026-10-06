@@ -1,6 +1,9 @@
 import type {
+  BillingCycle,
+  CheckoutConfirmationDTO,
   CompanyResponseDTO,
   CreateAdminUserDTO,
+  RegistrationCheckoutDTO,
   CreateCompanyDTO,
   SendAdminRegistrationEmailDTO,
   UserResponseDTO,
@@ -10,6 +13,9 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "");
 
 /** Chave do localStorage que guarda a empresa já cadastrada, até o administrador ser criado. */
 export const PENDING_COMPANY_KEY = "encarte-oferta:cadastro:companyId";
+
+/** Ciclo de cobrança escolhido no cadastro, para refazer o pagamento sem perguntar de novo. */
+export const PENDING_BILLING_CYCLE_KEY = "encarte-oferta:cadastro:billingCycle";
 
 /**
  * Erro de uma rota de cadastro, já com a mensagem em português para a tela.
@@ -40,9 +46,19 @@ const API_MESSAGES: Record<string, string> = {
   "This company already has an admin":
     "Esta empresa já tem um administrador cadastrado. Entre no app com o e-mail e a senha dele.",
   "Company not found": "Não encontramos a empresa deste cadastro. Vamos começar de novo pelos dados da empresa.",
+  // Assinatura (StartRegistrationCheckoutUseCase, ConfirmCheckoutSessionUseCase, CreateAdminUserUseCase)
+  "This company already has a subscription": "O pagamento desta empresa já foi confirmado.",
+  "The free plan is not billed": "O plano gratuito não tem cobrança.",
+  "The company plan must be paid before creating the admin":
+    "Precisamos confirmar o pagamento do plano antes de criar o administrador.",
+  "Checkout session not found": "Não encontramos este pagamento. Volte ao cadastro e tente de novo.",
+  "Payment provider request failed":
+    "Não conseguimos falar com o sistema de pagamento agora. Tente novamente em instantes.",
+  "Stripe billing is not configured":
+    "O pagamento está indisponível no momento. Tente novamente mais tarde ou fale com o nosso suporte.",
 };
 
-async function post<T>(path: string, body: unknown): Promise<T> {
+async function request<T>(path: string, init: { method: "GET" | "POST"; body?: unknown }): Promise<T> {
   if (!API_URL) {
     throw new RegistrationError(
       "O cadastro está indisponível no momento. Tente novamente mais tarde ou fale com o nosso suporte.",
@@ -53,9 +69,10 @@ async function post<T>(path: string, body: unknown): Promise<T> {
   let res: Response;
   try {
     res = await fetch(`${API_URL}${path}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
+      method: init.method,
+      headers: init.body === undefined ? undefined : { "Content-Type": "application/json" },
+      body: init.body === undefined ? undefined : JSON.stringify(init.body),
+      cache: "no-store",
     });
   } catch {
     throw new RegistrationError("Não conseguimos conectar ao servidor. Verifique sua internet e tente de novo.", 0);
@@ -78,6 +95,8 @@ async function post<T>(path: string, body: unknown): Promise<T> {
   return (json as { data: T }).data;
 }
 
+const post = <T>(path: string, body: unknown) => request<T>(path, { method: "POST", body });
+
 export function createCompany(data: CreateCompanyDTO) {
   return post<CompanyResponseDTO>("/companies", data);
 }
@@ -89,4 +108,22 @@ export function createAdminUser(data: CreateAdminUserDTO) {
 /** Envia ao administrador o e-mail de boas-vindas com os dados da empresa e do primeiro acesso. */
 export function sendAdminRegistrationEmail(data: SendAdminRegistrationEmailDTO) {
   return post<void>("/users/admin/registration-email", data);
+}
+
+/**
+ * Abre o pagamento do plano escolhido no cadastro. A API devolve a página do
+ * Stripe Checkout; ao terminar, o Stripe volta para /pagamento-sucesso ou
+ * /pagamento-falha.
+ */
+export function startRegistrationCheckout(companyId: string, billingCycle: BillingCycle) {
+  return post<RegistrationCheckoutDTO>(`/companies/${encodeURIComponent(companyId)}/registration-checkout`, {
+    billingCycle,
+  });
+}
+
+/** Confere no Stripe, pela API, se o pagamento de volta em /pagamento-sucesso foi aprovado. */
+export function confirmCheckoutSession(sessionId: string) {
+  return request<CheckoutConfirmationDTO>(`/billing/checkout-sessions/${encodeURIComponent(sessionId)}`, {
+    method: "GET",
+  });
 }

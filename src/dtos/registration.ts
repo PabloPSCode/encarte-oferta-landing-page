@@ -1,6 +1,8 @@
 /**
  * Espelha os DTOs de cadastro de encarte-oferta-api:
  * - ICreateCompanyDTO / createCompanySchema (POST /companies)
+ * - registrationCheckoutSchema (POST /companies/:id/registration-checkout)
+ * - CheckoutConfirmation (GET /billing/checkout-sessions/:sessionId)
  * - ICreateUserDTO / createAdminUserSchema (POST /users/admin)
  */
 
@@ -82,4 +84,22 @@ export interface UserResponseDTO {
   name: string;
   email: string;
   profile: string;
+}
+
+/** Ciclo de cobrança da assinatura (BILLING_CYCLES da API). */
+export type BillingCycle = "monthly" | "yearly";
+
+/** Resposta de POST /companies/:id/registration-checkout. */
+export interface RegistrationCheckoutDTO {
+  /** Página do Stripe Checkout para onde o navegador é enviado. */
+  checkoutUrl: string;
+}
+
+/** Resposta de GET /billing/checkout-sessions/:sessionId. */
+export interface CheckoutConfirmationDTO {
+  companyId: string;
+  /** O checkout foi concluído e a primeira cobrança aprovada. */
+  isPaid: boolean;
+  /** Falso durante o cadastro (ainda falta o administrador); verdadeiro quando a empresa assinou pelo app. */
+  hasAdmin: boolean;
 }

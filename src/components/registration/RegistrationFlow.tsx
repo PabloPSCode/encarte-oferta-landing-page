@@ -1,106 +1,171 @@
 "use client";
 
-import { SITE, SUPPORT, whatsappLink } from "@/content/site";
+import { REFUND_POLICY, SITE, SUPPORT, whatsappLink } from "@/content/site";
 import type { PlanResponseDTO } from "@/dtos/plans";
-import { PENDING_COMPANY_KEY } from "@/services/registration";
-import { Check, CheckCircle, CircleNotch, EnvelopeSimple, Info, WhatsappLogo } from "@phosphor-icons/react";
+import type { BillingCycle } from "@/dtos/registration";
+import { pendingRegistration } from "@/services/pendingRegistration";
+import { RegistrationError, startRegistrationCheckout } from "@/services/registration";
+import {
+  Check,
+  CheckCircle,
+  CircleNotch,
+  CreditCard,
+  EnvelopeSimple,
+  Info,
+  LockSimple,
+  WhatsappLogo,
+} from "@phosphor-icons/react";
 import clsx from "clsx";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import AdminForm, { type AdminCreatedResult, type AdminFailure } from "./AdminForm";
 import CompanyForm from "./CompanyForm";
 
-type Step = "loading" | "company" | "admin" | "done";
-
-/** localStorage pode não existir ou lançar (aba anônima, cookies bloqueados): o cadastro segue sem ele. */
-const storage = {
-  get: () => {
-    try {
-      return window.localStorage.getItem(PENDING_COMPANY_KEY);
-    } catch {
-      return null;
-    }
-  },
-  set: (companyId: string) => {
-    try {
-      window.localStorage.setItem(PENDING_COMPANY_KEY, companyId);
-    } catch {}
-  },
-  clear: () => {
-    try {
-      window.localStorage.removeItem(PENDING_COMPANY_KEY);
-    } catch {}
-  },
-};
+type Step = "loading" | "company" | "payment" | "admin" | "done";
 
 const STEPS = [
   { id: "company", label: "Dados da empresa" },
+  { id: "payment", label: "Pagamento" },
   { id: "admin", label: "Administrador" },
 ] as const;
 
+const STEP_INDEX: Record<Step, number> = { loading: 0, company: 0, payment: 1, admin: 2, done: 3 };
+
 const SUPPORT_LINK = whatsappLink("Olá! Preciso de ajuda com o cadastro da minha empresa no Encarte Oferta.");
+
+const CHECKOUT_ERROR = "Não foi possível abrir o pagamento agora. Tente novamente em instantes.";
 
 interface RegistrationFlowProps {
   plans: PlanResponseDTO[];
   defaultPlanId?: string;
+  defaultBillingCycle?: BillingCycle;
+  /**
+   * Empresa cujo pagamento acabou de ser confirmado em /pagamento-sucesso: o
+   * cadastro começa direto no passo do administrador.
+   */
+  paidCompanyId?: string;
 }
 
-export default function RegistrationFlow({ plans, defaultPlanId }: RegistrationFlowProps) {
+export default function RegistrationFlow({
+  plans,
+  defaultPlanId,
+  defaultBillingCycle,
+  paidCompanyId,
+}: RegistrationFlowProps) {
   const [step, setStep] = useState<Step>("loading");
   const [companyId, setCompanyId] = useState<string | null>(null);
+  const [billingCycle, setBillingCycle] = useState<BillingCycle>(defaultBillingCycle ?? "monthly");
   const [resumed, setResumed] = useState(false);
+  const [paid, setPaid] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
+  const [checkout, setCheckout] = useState<{ status: "idle" | "redirecting" | "error"; message?: string }>({
+    status: "idle",
+  });
   const [result, setResult] = useState<AdminCreatedResult | null>(null);
   const topRef = useRef<HTMLDivElement>(null);
-
-  // Lido só no navegador: quem fechou a página depois de cadastrar a empresa volta direto ao passo 2.
-  useEffect(() => {
-    const saved = storage.get();
-    if (saved) {
-      setCompanyId(saved);
-      setResumed(true);
-      setStep("admin");
-    } else {
-      setStep("company");
-    }
-  }, []);
 
   const goTo = (next: Step) => {
     setStep(next);
     topRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  const handleCompanyCreated = (id: string) => {
-    storage.set(id);
+  const handleCompanyUnavailable = useCallback((reason: AdminFailure, message: string) => {
+    pendingRegistration.clear();
+    setCompanyId(null);
+    setResumed(false);
+    setNotice(message);
+    setStep(reason === "company-has-admin" ? "done" : "company");
+  }, []);
+
+  /**
+   * Abre o Stripe Checkout do plano escolhido. O navegador sai da página e o
+   * Stripe o devolve para /pagamento-sucesso ou /pagamento-falha.
+   */
+  const goToCheckout = useCallback(
+    async (id: string, cycle: BillingCycle) => {
+      setCheckout({ status: "redirecting" });
+      try {
+        const { checkoutUrl } = await startRegistrationCheckout(id, cycle);
+        window.location.assign(checkoutUrl);
+      } catch (error) {
+        const err = error instanceof RegistrationError ? error : null;
+
+        if (err?.apiMessage === "This company already has a subscription") {
+          setPaid(true);
+          setCheckout({ status: "idle" });
+          return setStep("admin");
+        }
+        if (err?.apiMessage === "This company already has an admin") {
+          return handleCompanyUnavailable("company-has-admin", err.message);
+        }
+        if (err?.apiMessage === "Company not found") {
+          return handleCompanyUnavailable("company-not-found", err.message);
+        }
+        setCheckout({ status: "error", message: err?.message ?? CHECKOUT_ERROR });
+      }
+    },
+    [handleCompanyUnavailable],
+  );
+
+  // Lido só no navegador: quem fechou a página no meio do cadastro continua de onde parou.
+  useEffect(() => {
+    if (paidCompanyId) {
+      const saved = pendingRegistration.get();
+      pendingRegistration.set({
+        companyId: paidCompanyId,
+        billingCycle: saved?.billingCycle ?? "monthly",
+      });
+      setCompanyId(paidCompanyId);
+      setPaid(true);
+      setStep("admin");
+      return;
+    }
+
+    const saved = pendingRegistration.get();
+    if (saved) {
+      setCompanyId(saved.companyId);
+      setBillingCycle(saved.billingCycle);
+      setResumed(true);
+      setStep("payment");
+    } else {
+      setStep("company");
+    }
+  }, [paidCompanyId]);
+
+  const handleCompanyCreated = (id: string, cycle: BillingCycle) => {
+    pendingRegistration.set({ companyId: id, billingCycle: cycle });
     setCompanyId(id);
+    setBillingCycle(cycle);
     setResumed(false);
     setNotice(null);
-    goTo("admin");
+    goTo("payment");
+    void goToCheckout(id, cycle);
   };
 
   const handleAdminCreated = (created: AdminCreatedResult) => {
-    storage.clear();
+    pendingRegistration.clear();
     setCompanyId(null);
     setResult(created);
     goTo("done");
   };
 
-  const handleCompanyUnavailable = (reason: AdminFailure, message: string) => {
-    storage.clear();
-    setCompanyId(null);
-    setResumed(false);
+  const handlePaymentRequired = (message: string) => {
+    setPaid(false);
     setNotice(message);
-    goTo(reason === "company-has-admin" ? "done" : "company");
+    setCheckout({ status: "idle" });
+    goTo("payment");
   };
 
   const restart = () => {
-    storage.clear();
+    pendingRegistration.clear();
     setCompanyId(null);
     setResumed(false);
+    setPaid(false);
     setNotice(null);
+    setCheckout({ status: "idle" });
     goTo("company");
   };
 
-  const currentIndex = step === "admin" ? 1 : step === "done" ? 2 : 0;
+  const currentIndex = STEP_INDEX[step];
 
   return (
     <div ref={topRef} className="scroll-mt-24">
@@ -123,7 +188,7 @@ export default function RegistrationFlow({ plans, defaultPlanId }: RegistrationF
                 </span>
                 <span className="min-w-0">
                   <span className="block text-[11px] font-extrabold uppercase tracking-[0.1em] text-ink-soft">
-                    Passo {i + 1} de 2
+                    Passo {i + 1} de {STEPS.length}
                   </span>
                   <span className={clsx("block truncate text-[14px] font-extrabold", current ? "text-ink" : "text-ink-2")}>
                     {s.label}
@@ -151,7 +216,59 @@ export default function RegistrationFlow({ plans, defaultPlanId }: RegistrationF
               description="Leva uns 3 minutos. Tenha em mãos o cartão CNPJ: os dados precisam ser os mesmos da Receita Federal."
             />
             {notice && <Notice tone="warning">{notice}</Notice>}
-            <CompanyForm plans={plans} defaultPlanId={defaultPlanId} onCreated={handleCompanyCreated} />
+            <CompanyForm
+              plans={plans}
+              defaultPlanId={defaultPlanId}
+              defaultBillingCycle={defaultBillingCycle}
+              onCreated={handleCompanyCreated}
+            />
+          </>
+        )}
+
+        {step === "payment" && companyId && (
+          <>
+            <StepHeader
+              title="Pagamento do plano"
+              description="O pagamento é feito com cartão de crédito no ambiente seguro do Stripe. Assim que ele for aprovado, você volta para cá e cria o seu acesso."
+            />
+            {notice && <Notice tone="warning">{notice}</Notice>}
+            {resumed && (
+              <Notice tone="info">
+                Encontramos um cadastro em andamento neste navegador: os dados da empresa já foram salvos, falta
+                o pagamento.{" "}
+                <button type="button" onClick={restart} className="font-extrabold underline underline-offset-2 hover:text-ink">
+                  Quer cadastrar outra empresa?
+                </button>
+              </Notice>
+            )}
+            {checkout.status === "error" && <Notice tone="warning">{checkout.message}</Notice>}
+
+            <div className="flex flex-col items-center gap-4 rounded-[18px] border border-line bg-surface-2 px-5 py-8 text-center">
+              <span className="grid size-14 place-items-center rounded-full bg-brand text-on-brand">
+                <CreditCard size={28} weight="fill" />
+              </span>
+              <p className="max-w-[420px] text-[14.5px] leading-relaxed text-ink-2">
+                Cobrança <strong className="text-ink">{billingCycle === "yearly" ? "anual, à vista" : "mensal"}</strong>{" "}
+                no cartão de crédito. Você tem garantia de {REFUND_POLICY.days} dias: se cancelar nesse prazo, devolvemos o
+                valor pago, descontando apenas os vídeos com IA gerados.
+              </p>
+              <button
+                type="button"
+                onClick={() => void goToCheckout(companyId, billingCycle)}
+                disabled={checkout.status === "redirecting"}
+                className="inline-flex items-center justify-center gap-2 rounded-[13px] bg-accent px-7 py-4 text-[15px] font-extrabold text-white transition-colors hover:bg-black disabled:cursor-wait disabled:opacity-70"
+              >
+                {checkout.status === "redirecting" ? (
+                  <>
+                    <CircleNotch size={18} weight="bold" className="animate-spin" /> Abrindo o pagamento…
+                  </>
+                ) : (
+                  <>
+                    <LockSimple size={18} weight="bold" /> Ir para o pagamento
+                  </>
+                )}
+              </button>
+            </div>
           </>
         )}
 
@@ -161,21 +278,12 @@ export default function RegistrationFlow({ plans, defaultPlanId }: RegistrationF
               title="Agora, crie o seu acesso"
               description="Falta pouco! Cadastre quem vai administrar a conta da empresa no Encarte Oferta."
             />
-            {resumed ? (
-              <Notice tone="info">
-                Encontramos um cadastro em andamento neste navegador: os dados da empresa já foram salvos, então você
-                continua de onde parou.{" "}
-                <button type="button" onClick={restart} className="font-extrabold underline underline-offset-2 hover:text-ink">
-                  Quer cadastrar outra empresa?
-                </button>
-              </Notice>
-            ) : (
-              <Notice tone="success">Empresa cadastrada com sucesso! Os dados já estão salvos.</Notice>
-            )}
+            {paid && <Notice tone="success">Pagamento confirmado! Agora é só criar o seu acesso.</Notice>}
             <AdminForm
               companyId={companyId}
               onCreated={handleAdminCreated}
               onCompanyUnavailable={handleCompanyUnavailable}
+              onPaymentRequired={handlePaymentRequired}
             />
           </>
         )}

@@ -1,10 +1,12 @@
 import Footer from "@/components/landing/Footer";
 import Header from "@/components/landing/Header";
 import RegistrationFlow from "@/components/registration/RegistrationFlow";
+import { REFUND_POLICY } from "@/content/site";
 import { getPlans } from "@/services/plans";
 import {
   ArrowLeftIcon,
   BuildingsIcon,
+  CreditCardIcon,
   ShieldCheckIcon,
   SparkleIcon,
   UserCircleIcon,
@@ -15,7 +17,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Cadastro",
   description:
-    "Cadastre a sua empresa no Encarte Oferta em dois passos: dados da empresa e acesso do administrador. Em poucos minutos você já cria o seu primeiro encarte.",
+    "Cadastre a sua empresa no Encarte Oferta em três passos: dados da empresa, pagamento do plano e acesso do administrador. Em poucos minutos você já cria o seu primeiro encarte.",
   alternates: { canonical: "/cadastro" },
 };
 
@@ -26,8 +28,13 @@ const HOW_IT_WORKS = [
     body: "Escolha o plano, o ramo de atividade e informe os dados do cartão CNPJ, o contato e o endereço da loja.",
   },
   {
+    icon: CreditCardIcon,
+    title: "2. Pagamento",
+    body: `Pague o plano com cartão de crédito no ambiente seguro do Stripe. Você tem ${REFUND_POLICY.days} dias de garantia.`,
+  },
+  {
     icon: UserCircleIcon,
-    title: "2. Administrador",
+    title: "3. Administrador",
     body: "Crie o seu acesso com e-mail e senha. O administrador gerencia a conta e cadastra os usuários da equipe.",
   },
   {
@@ -38,14 +45,15 @@ const HOW_IT_WORKS = [
 ];
 
 interface CadastroPageProps {
-  searchParams: Promise<{ plano?: string }>;
+  searchParams: Promise<{ plano?: string; ciclo?: string }>;
 }
 
 export default async function CadastroPage({
   searchParams,
 }: CadastroPageProps) {
-  const [plans, { plano }] = await Promise.all([getPlans(), searchParams]);
+  const [plans, { plano, ciclo }] = await Promise.all([getPlans(), searchParams]);
   const defaultPlanId = plans.find((p) => p.name === plano?.toLowerCase())?.id;
+  const defaultBillingCycle = ciclo?.toLowerCase() === "anual" ? "yearly" : "monthly";
 
   return (
     <div className="overflow-x-clip font-sans">
@@ -71,16 +79,17 @@ export default async function CadastroPage({
               Comece a criar os encartes da sua loja
             </h1>
             <p className="mt-4 max-w-[600px] text-[16px] leading-relaxed text-on-brand-soft text-pretty">
-              São só dois passos: primeiro os dados da sua empresa, depois o seu
-              acesso de administrador. Se precisar parar no meio, tudo bem: ao
-              voltar por este navegador, você continua de onde parou.
+              São três passos: os dados da sua empresa, o pagamento do plano com
+              cartão de crédito e o seu acesso de administrador. Se precisar parar
+              no meio, tudo bem: ao voltar por este navegador, você continua de onde
+              parou.
             </p>
           </div>
         </section>
 
         <div className="mx-auto grid max-w-[1200px] gap-10 px-4 pt-10 sm:px-7 lg:grid-cols-[1fr_320px]">
           <div className="min-w-0">
-            <RegistrationFlow plans={plans} defaultPlanId={defaultPlanId} />
+            <RegistrationFlow plans={plans} defaultPlanId={defaultPlanId} defaultBillingCycle={defaultBillingCycle} />
           </div>
 
           <aside className="flex flex-col gap-4 lg:sticky lg:top-24 lg:self-start">
