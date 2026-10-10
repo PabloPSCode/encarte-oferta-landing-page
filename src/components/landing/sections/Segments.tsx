@@ -31,7 +31,7 @@ export default function Segments() {
           seu para ver como o Encarte Oferta funciona na sua loja.
         </p>
       </div>
-      <ul className="mt-10 grid grid-cols-1 gap-3 min-[420px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+      <ul className="mt-10 grid grid-cols-1 gap-3 min-[420px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {SEGMENTS.map((s) => {
           const Icon = ICONS[s.icon];
           const content = (
