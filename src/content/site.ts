@@ -71,10 +71,10 @@ export const SEGMENTS = [
   { label: "Açougues", icon: "Knife", slug: "acougues" },
   { label: "Feiras e sacolões", icon: "Carrot", slug: "feiras-e-sacoloes" },
   { label: "Pet shops", icon: "PawPrint", slug: "pet-shops" },
-  { label: "Lojas de eletrônicos", icon: "DeviceMobile" },
+  // { label: "Lojas de eletrônicos", icon: "DeviceMobile" },
   { label: "Lojas de materiais de construção", icon: "HardHat", slug: "lojas-de-materiais-de-construcao" },
   { label: "Lojas de pneus", icon: "Tire", slug: "lojas-de-pneus" },
-  { label: "Lubrificantes, aditivos e fluidos", icon: "Drop" },
+  // { label: "Lubrificantes, aditivos e fluidos", icon: "Drop" },
   { label: "Lojas de EPIs", icon: "ShieldCheck", slug: "lojas-de-epis" },
   { label: "Lojas de suplementos", icon: "Barbell", slug: "lojas-de-suplementos" },
 ] as const;
