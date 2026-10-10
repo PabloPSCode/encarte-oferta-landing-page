@@ -54,7 +54,7 @@ const sections: LegalSection[] = [
         </li>
         <li>
           <strong>Encarte</strong>: a peça de divulgação de ofertas criada na plataforma, nos formatos feed (1080×1350) ou
-          stories (1080×1920), com uma ou mais páginas.
+          stories (1080×1920).
         </li>
         <li>
           <strong>Tema</strong>: a arte de fundo do encarte. Pode ser global (disponível a todos os clientes) ou gerado com

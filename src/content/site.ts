@@ -61,18 +61,22 @@ export const PLANS_LINK = whatsappLink(
   "Olá! Quero saber os valores dos planos do Encarte Oferta (Start, Avançado e Profissional)."
 );
 
-/** Ramos de atividade aceitos no cadastro (encarte-oferta-api/src/data/estabilishments.ts). */
+/**
+ * Ramos de atividade aceitos no cadastro (encarte-oferta-api/src/data/estabilishments.ts).
+ * `slug` aponta para a página dedicada do segmento (src/content/segments.ts);
+ * ramos sem página aparecem na seção Segmentos sem link.
+ */
 export const SEGMENTS = [
-  { label: "Supermercado", icon: "ShoppingCart" },
-  { label: "Açougue", icon: "Knife" },
-  { label: "Hortifrúti", icon: "Carrot" },
-  { label: "Pet shop", icon: "PawPrint" },
-  { label: "Loja de eletrônicos", icon: "DeviceMobile" },
-  { label: "Materiais de construção", icon: "HardHat" },
-  { label: "Loja de pneus", icon: "Tire" },
+  { label: "Supermercados e mercearias", icon: "ShoppingCart", slug: "supermercados-e-mercearias" },
+  { label: "Açougues", icon: "Knife", slug: "acougues" },
+  { label: "Feiras e sacolões", icon: "Carrot", slug: "feiras-e-sacoloes" },
+  { label: "Pet shops", icon: "PawPrint", slug: "pet-shops" },
+  { label: "Lojas de eletrônicos", icon: "DeviceMobile" },
+  { label: "Lojas de materiais de construção", icon: "HardHat", slug: "lojas-de-materiais-de-construcao" },
+  { label: "Lojas de pneus", icon: "Tire", slug: "lojas-de-pneus" },
   { label: "Lubrificantes, aditivos e fluidos", icon: "Drop" },
-  { label: "EPIs", icon: "ShieldCheck" },
-  { label: "Suplementos", icon: "Barbell" },
+  { label: "Lojas de EPIs", icon: "ShieldCheck", slug: "lojas-de-epis" },
+  { label: "Lojas de suplementos", icon: "Barbell", slug: "lojas-de-suplementos" },
 ] as const;
 
 /** Perguntas selecionadas da central de ajuda (encarte-oferta-api/src/data/faqs.ts). */

@@ -3,7 +3,7 @@ import { Check } from "@phosphor-icons/react/dist/ssr";
 const DETAILS = [
   "Ajuste de design da arte com diversas opções de personalização.",
   "Possibilidade de exibir preços promocionais “de / por” e com parcelamento.",
-  "De 1 a 12 produtos por página e até 12 páginas no mesmo encarte.",
+  "De 1 a 12 produtos em cada encarte.",
   "Validade da oferta impressa na arte: por período, para um dia ou até uma data.",
   "Pix, Visa, Mastercard, VR e Sodexo exibidos no rodapé como formas de pagamento.",
   "Encartes salvos: edite, baixe de novo ou gere o vídeo quando quiser.",
