@@ -120,15 +120,14 @@ export default function PlansGrid({ plans }: { plans: PlanResponseDTO[] }) {
                   em letra pequena, logo abaixo. */}
               <p className="mt-1 min-h-[20px] text-[12.5px] text-ink-soft">
                 {isYear && discount ? (
-                  <>
+                  <div className="flex flex-col gap-1">
                     <span className="line-through">
                       {formatBRL(plan.monthValueInCents)}
                     </span>{" "}
-                    no plano anual
                     <strong className="ml-1.5 font-extrabold text-accent">
                       -{discount}%
                     </strong>
-                  </>
+                  </div>
                 ) : discount ? (
                   <>
                     ou {formatBRL(monthlyEquivalentInCents(plan))}/mês no plano
@@ -141,11 +140,6 @@ export default function PlansGrid({ plans }: { plans: PlanResponseDTO[] }) {
                   <>Cobrança mensal</>
                 )}
               </p>
-              {plan.yearValueInCents > 0 && (
-                <p className="mt-0.5 text-[11.5px] text-ink-soft">
-                  Plano anual: {formatBRL(plan.yearValueInCents)}/ano
-                </p>
-              )}
 
               <div className="my-6 h-px bg-line" />
 
