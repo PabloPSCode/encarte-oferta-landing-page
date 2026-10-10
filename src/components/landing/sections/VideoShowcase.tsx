@@ -50,7 +50,7 @@ export default function VideoShowcase() {
           playsInline
           controls={started}
         >
-          <source src="/media/encarte-oferta-flow-edit-v8.mp4" type="video/mp4" />
+          <source src="/media/encarte-oferta-flow-edit-v11.mp4" type="video/mp4" />
         </video>
 
         {!started && (
