@@ -2,8 +2,6 @@ import {
   ArrowRight,
   Barbell,
   Carrot,
-  DeviceMobile,
-  Drop,
   HardHat,
   Knife,
   PawPrint,
@@ -15,7 +13,7 @@ import Link from "next/link";
 import Eyebrow from "../Eyebrow";
 import { SEGMENTS } from "@/content/site";
 
-const ICONS = { Barbell, Carrot, DeviceMobile, Drop, HardHat, Knife, PawPrint, ShieldCheck, ShoppingCart, Tire };
+const ICONS = { Barbell, Carrot, HardHat, Knife, PawPrint, ShieldCheck, ShoppingCart, Tire };
 
 export default function Segments() {
   return (

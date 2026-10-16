@@ -6,16 +6,17 @@
  * - ICreateUserDTO / createAdminUserSchema (POST /users/admin)
  */
 
-/** encarte-oferta-api/src/data/estabilishments.ts (ESTABILISHMENTS). */
+/**
+ * encarte-oferta-api/src/data/estabilishments.ts (ESTABILISHMENTS), menos loja de
+ * eletrônicos e loja de lubrificantes, aditivos e fluidos, que não são oferecidas no cadastro.
+ */
 export const ESTABILISHMENTS = [
   { value: "supermercado", label: "Supermercado" },
   { value: "acougue", label: "Açougue" },
   { value: "hortifruti", label: "Hortifrúti" },
   { value: "petshop", label: "Pet shop" },
-  { value: "loja-de-eletronicos", label: "Loja de eletrônicos" },
   { value: "loja-de-materiais-de-construcao", label: "Loja de materiais de construção" },
   { value: "loja-de-pneus", label: "Loja de pneus" },
-  { value: "loja-de-lubrificantes-aditivos-e-fluidos", label: "Loja de lubrificantes, aditivos e fluidos" },
   { value: "loja-de-epis", label: "Loja de EPIs" },
   { value: "loja-de-suplementos", label: "Loja de suplementos" },
 ] as const;

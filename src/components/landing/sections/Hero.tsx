@@ -8,7 +8,7 @@ import CtaButton from "../CtaButton";
 const STATS = [
   { value: "4 etapas", label: "do tema à publicação" },
   { value: "+40 mil", label: "produtos no catálogo" },
-  { value: "10 ramos", label: "com temas próprios" },
+  { value: "8 ramos", label: "com temas próprios" },
 ];
 
 export default function Hero() {
