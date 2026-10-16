@@ -79,7 +79,9 @@ interface CompanyFormProps {
   plans: PlanResponseDTO[];
   defaultPlanId?: string;
   defaultBillingCycle?: BillingCycle;
-  /** A empresa foi criada: o cadastro segue para o pagamento no ciclo escolhido. */
+  /** Cadastro no plano gratuito: a empresa entra nele e a escolha de plano e de cobrança não aparece. */
+  freePlanId?: string;
+  /** A empresa foi criada: o cadastro segue para o pagamento no ciclo escolhido (ou, no gratuito, para o administrador). */
   onCreated: (companyId: string, billingCycle: BillingCycle) => void;
 }
 
@@ -92,6 +94,7 @@ export default function CompanyForm({
   plans,
   defaultPlanId,
   defaultBillingCycle = "monthly",
+  freePlanId,
   onCreated,
 }: CompanyFormProps) {
   const {
@@ -106,7 +109,7 @@ export default function CompanyForm({
   } = useForm<CompanyFormValues>({
     mode: "onBlur",
     defaultValues: {
-      planId: defaultPlanId ?? "",
+      planId: freePlanId ?? defaultPlanId ?? "",
       billingCycle: defaultBillingCycle,
       estabilishment: "",
       socialReason: "",
@@ -179,7 +182,7 @@ export default function CompanyForm({
 
   const onSubmit = async (values: CompanyFormValues) => {
     const data: CreateCompanyDTO = {
-      planId: values.planId,
+      planId: freePlanId ?? values.planId,
       estabilishment: values.estabilishment as Estabilishment,
       socialReason: values.socialReason.trim(),
       fantasyName: values.fantasyName.trim(),
@@ -234,134 +237,142 @@ export default function CompanyForm({
     >
       <FormSection
         icon={StorefrontIcon}
-        title="Plano e ramo de atividade"
-        description="Escolha o plano e a forma de cobrança. O pagamento é feito no próximo passo, com cartão de crédito, e você pode trocar de plano depois, direto no app."
+        title={freePlanId ? "Ramo de atividade" : "Plano e ramo de atividade"}
+        description={
+          freePlanId
+            ? "O seu cadastro é no plano gratuito, sem cobrança e sem cartão de crédito. Se quiser, você troca para um plano pago depois, direto no app."
+            : "Escolha o plano e a forma de cobrança. O pagamento é feito no próximo passo, com cartão de crédito, e você pode trocar de plano depois, direto no app."
+        }
       >
-        <fieldset className="mb-4">
-          <legend className="mb-2 text-[13px] font-extrabold text-ink">
-            Cobrança
-          </legend>
-          <div className="inline-flex rounded-full border border-line bg-surface p-1">
-            {BILLING_CYCLES.map(({ value, label }) => (
-              <label
-                key={value}
-                className={clsx(
-                  "flex cursor-pointer items-center gap-2 rounded-full px-5 py-2 text-[13.5px] font-extrabold transition-colors",
-                  "has-[:focus-visible]:ring-4 has-[:focus-visible]:ring-brand/30",
-                  billingCycle === value
-                    ? "bg-on-brand text-brand"
-                    : "text-ink-2 hover:text-ink",
-                )}
-              >
-                <input
-                  type="radio"
-                  value={value}
-                  className="sr-only"
-                  {...register("billingCycle")}
-                />
-                {label}
-                {value === "yearly" && bestDiscount > 0 && (
-                  <span
+        {!freePlanId && (
+          <>
+            <fieldset className="mb-4">
+              <legend className="mb-2 text-[13px] font-extrabold text-ink">
+                Cobrança
+              </legend>
+              <div className="inline-flex rounded-full border border-line bg-surface p-1">
+                {BILLING_CYCLES.map(({ value, label }) => (
+                  <label
+                    key={value}
                     className={clsx(
-                      "rounded-full px-2 py-0.5 text-[10.5px] font-extrabold",
-                      billingCycle === "yearly"
-                        ? "bg-brand text-on-brand"
-                        : "bg-accent-tint text-accent",
+                      "flex cursor-pointer items-center gap-2 rounded-full px-5 py-2 text-[13.5px] font-extrabold transition-colors",
+                      "has-[:focus-visible]:ring-4 has-[:focus-visible]:ring-brand/30",
+                      billingCycle === value
+                        ? "bg-on-brand text-brand"
+                        : "text-ink-2 hover:text-ink",
                     )}
                   >
-                    -{bestDiscount}%
-                  </span>
-                )}
-              </label>
-            ))}
-          </div>
-        </fieldset>
+                    <input
+                      type="radio"
+                      value={value}
+                      className="sr-only"
+                      {...register("billingCycle")}
+                    />
+                    {label}
+                    {value === "yearly" && bestDiscount > 0 && (
+                      <span
+                        className={clsx(
+                          "rounded-full px-2 py-0.5 text-[10.5px] font-extrabold",
+                          billingCycle === "yearly"
+                            ? "bg-brand text-on-brand"
+                            : "bg-accent-tint text-accent",
+                        )}
+                      >
+                        -{bestDiscount}%
+                      </span>
+                    )}
+                  </label>
+                ))}
+              </div>
+            </fieldset>
 
-        <fieldset aria-describedby={errors.planId ? "planId-error" : undefined}>
-          <legend className="sr-only">Plano</legend>
-          <div className="grid gap-3 sm:grid-cols-3">
-            {plans.map((plan) => {
-              const checked = selectedPlanId === plan.id;
-              return (
-                <label
-                  key={plan.id}
-                  className={clsx(
-                    "relative flex cursor-pointer flex-col gap-1 rounded-[14px] border-[1.5px] bg-surface p-4 transition",
-                    "has-[:focus-visible]:ring-4 has-[:focus-visible]:ring-brand/30",
-                    checked
-                      ? "border-brand-strong bg-brand-tint"
-                      : errors.planId
-                        ? "border-accent"
-                        : "border-line hover:border-ink-soft/50",
-                  )}
-                >
-                  <input
-                    type="radio"
-                    value={plan.id}
-                    className="sr-only"
-                    {...register("planId", {
-                      required: "Escolha um plano para continuar.",
-                    })}
-                  />
-                  <span className="flex items-center justify-between text-[15px] font-black text-ink">
-                    {planTitle(plan)}
-                    {checked && (
-                      <CheckCircleIcon
-                        size={20}
-                        weight="fill"
-                        className="text-brand-ink"
+            <fieldset aria-describedby={errors.planId ? "planId-error" : undefined}>
+              <legend className="sr-only">Plano</legend>
+              <div className="grid gap-3 sm:grid-cols-3">
+                {plans.map((plan) => {
+                  const checked = selectedPlanId === plan.id;
+                  return (
+                    <label
+                      key={plan.id}
+                      className={clsx(
+                        "relative flex cursor-pointer flex-col gap-1 rounded-[14px] border-[1.5px] bg-surface p-4 transition",
+                        "has-[:focus-visible]:ring-4 has-[:focus-visible]:ring-brand/30",
+                        checked
+                          ? "border-brand-strong bg-brand-tint"
+                          : errors.planId
+                            ? "border-accent"
+                            : "border-line hover:border-ink-soft/50",
+                      )}
+                    >
+                      <input
+                        type="radio"
+                        value={plan.id}
+                        className="sr-only"
+                        {...register("planId", {
+                          required: "Escolha um plano para continuar.",
+                        })}
                       />
-                    )}
-                  </span>
-                  <span className="text-[13px] font-bold text-ink-2">
-                    {formatBRL(
-                      billingCycle === "yearly"
-                        ? monthlyEquivalentInCents(plan)
-                        : plan.monthValueInCents,
-                    )}
-                    <span className="font-semibold text-ink-soft">/mês</span>
-                  </span>
-                  {billingCycle === "yearly" && (
-                    <span className="text-[12px] text-ink-soft">
-                      no plano anual
-                    </span>
-                  )}
-                  {plan.yearValueInCents > 0 && (
-                    <span className="text-[11px] text-ink-soft">
-                      Plano anual: {formatBRL(plan.yearValueInCents)}/ano
-                    </span>
-                  )}
-                  <span className="text-[12px] text-ink-soft">
-                    {plan.maxFlyerGenerations} encartes por mês
-                  </span>
-                </label>
-              );
-            })}
-          </div>
-          {errors.planId && (
-            <p
-              id="planId-error"
-              role="alert"
-              className="mt-2 text-[12.5px] font-semibold text-accent"
-            >
-              {errors.planId.message}
-            </p>
-          )}
-          <p className="mt-3 text-[12.5px] leading-relaxed text-ink-soft">
-            Planos pagos têm garantia de {REFUND_POLICY.days} dias: se cancelar
-            nesse prazo, devolvemos o valor pago, descontando{" "}
-            {formatBRL(videoRefundChargeOf(plans))} por vídeo com IA gerado no
-            período. Depois disso, não há reembolso.{" "}
-            <a
-              href={REFUND_POLICY.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-bold text-accent hover:underline"
-            >
-              Política de Cancelamento
-            </a>
-          </p>
-        </fieldset>
+                      <span className="flex items-center justify-between text-[15px] font-black text-ink">
+                        {planTitle(plan)}
+                        {checked && (
+                          <CheckCircleIcon
+                            size={20}
+                            weight="fill"
+                            className="text-brand-ink"
+                          />
+                        )}
+                      </span>
+                      <span className="text-[13px] font-bold text-ink-2">
+                        {formatBRL(
+                          billingCycle === "yearly"
+                            ? monthlyEquivalentInCents(plan)
+                            : plan.monthValueInCents,
+                        )}
+                        <span className="font-semibold text-ink-soft">/mês</span>
+                      </span>
+                      {billingCycle === "yearly" && (
+                        <span className="text-[12px] text-ink-soft">
+                          no plano anual
+                        </span>
+                      )}
+                      {plan.yearValueInCents > 0 && (
+                        <span className="text-[11px] text-ink-soft">
+                          Plano anual: {formatBRL(plan.yearValueInCents)}/ano
+                        </span>
+                      )}
+                      <span className="text-[12px] text-ink-soft">
+                        {plan.maxFlyerGenerations} encartes por mês
+                      </span>
+                    </label>
+                  );
+                })}
+              </div>
+              {errors.planId && (
+                <p
+                  id="planId-error"
+                  role="alert"
+                  className="mt-2 text-[12.5px] font-semibold text-accent"
+                >
+                  {errors.planId.message}
+                </p>
+              )}
+              <p className="mt-3 text-[12.5px] leading-relaxed text-ink-soft">
+                Planos pagos têm garantia de {REFUND_POLICY.days} dias: se cancelar
+                nesse prazo, devolvemos o valor pago, descontando{" "}
+                {formatBRL(videoRefundChargeOf(plans))} por vídeo com IA gerado no
+                período. Depois disso, não há reembolso.{" "}
+                <a
+                  href={REFUND_POLICY.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-bold text-accent hover:underline"
+                >
+                  Política de Cancelamento
+                </a>
+              </p>
+            </fieldset>
+          </>
+        )}
 
         <SelectField
           id="estabilishment"

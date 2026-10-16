@@ -17,6 +17,9 @@ export const PENDING_COMPANY_KEY = "encarte-oferta:cadastro:companyId";
 /** Ciclo de cobrança escolhido no cadastro, para refazer o pagamento sem perguntar de novo. */
 export const PENDING_BILLING_CYCLE_KEY = "encarte-oferta:cadastro:billingCycle";
 
+/** Marca a empresa cadastrada no plano gratuito: ela não tem pagamento, só falta o administrador. */
+export const PENDING_FREE_PLAN_KEY = "encarte-oferta:cadastro:freePlan";
+
 /**
  * Erro de uma rota de cadastro, já com a mensagem em português para a tela.
  * `fieldErrors` traz os erros de validação por campo (ZodValidationPipe da API).

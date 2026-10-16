@@ -28,7 +28,8 @@ const STEPS = [
   { id: "admin", label: "Administrador" },
 ] as const;
 
-const STEP_INDEX: Record<Step, number> = { loading: 0, company: 0, payment: 1, admin: 2, done: 3 };
+/** O plano gratuito não tem cobrança: da empresa, o cadastro vai direto para o administrador. */
+const FREE_PLAN_STEPS = STEPS.filter((s) => s.id !== "payment");
 
 const SUPPORT_LINK = whatsappLink("Olá! Preciso de ajuda com o cadastro da minha empresa no Encarte Oferta.");
 
@@ -38,6 +39,8 @@ interface RegistrationFlowProps {
   plans: PlanResponseDTO[];
   defaultPlanId?: string;
   defaultBillingCycle?: BillingCycle;
+  /** Cadastro aberto com ?freePlan=true: a empresa entra neste plano, sem escolha de plano nem pagamento. */
+  freePlanId?: string;
   /**
    * Empresa cujo pagamento acabou de ser confirmado em /pagamento-sucesso: o
    * cadastro começa direto no passo do administrador.
@@ -49,6 +52,7 @@ export default function RegistrationFlow({
   plans,
   defaultPlanId,
   defaultBillingCycle,
+  freePlanId,
   paidCompanyId,
 }: RegistrationFlowProps) {
   const [step, setStep] = useState<Step>("loading");
@@ -56,6 +60,7 @@ export default function RegistrationFlow({
   const [billingCycle, setBillingCycle] = useState<BillingCycle>(defaultBillingCycle ?? "monthly");
   const [resumed, setResumed] = useState(false);
   const [paid, setPaid] = useState(false);
+  const [free, setFree] = useState(!!freePlanId);
   const [notice, setNotice] = useState<string | null>(null);
   const [checkout, setCheckout] = useState<{ status: "idle" | "redirecting" | "error"; message?: string }>({
     status: "idle",
@@ -72,9 +77,10 @@ export default function RegistrationFlow({
     pendingRegistration.clear();
     setCompanyId(null);
     setResumed(false);
+    setFree(!!freePlanId);
     setNotice(message);
     setStep(reason === "company-has-admin" ? "done" : "company");
-  }, []);
+  }, [freePlanId]);
 
   /**
    * Abre o Stripe Checkout do plano escolhido. O navegador sai da página e o
@@ -113,6 +119,7 @@ export default function RegistrationFlow({
       pendingRegistration.set({
         companyId: paidCompanyId,
         billingCycle: saved?.billingCycle ?? "monthly",
+        freePlan: false,
       });
       setCompanyId(paidCompanyId);
       setPaid(true);
@@ -121,22 +128,30 @@ export default function RegistrationFlow({
     }
 
     const saved = pendingRegistration.get();
-    if (saved) {
+    if (saved?.freePlan) {
+      // A empresa já está no plano gratuito: só falta o administrador, com ou sem ?freePlan=true.
+      setCompanyId(saved.companyId);
+      setFree(true);
+      setResumed(true);
+      setStep("admin");
+    } else if (saved && !freePlanId) {
       setCompanyId(saved.companyId);
       setBillingCycle(saved.billingCycle);
       setResumed(true);
       setStep("payment");
     } else {
+      // No cadastro gratuito, um cadastro pago em andamento não é retomado: ele levaria ao pagamento.
       setStep("company");
     }
-  }, [paidCompanyId]);
+  }, [paidCompanyId, freePlanId]);
 
   const handleCompanyCreated = (id: string, cycle: BillingCycle) => {
-    pendingRegistration.set({ companyId: id, billingCycle: cycle });
+    pendingRegistration.set({ companyId: id, billingCycle: cycle, freePlan: free });
     setCompanyId(id);
     setBillingCycle(cycle);
     setResumed(false);
     setNotice(null);
+    if (free) return goTo("admin");
     goTo("payment");
     void goToCheckout(id, cycle);
   };
@@ -150,6 +165,7 @@ export default function RegistrationFlow({
 
   const handlePaymentRequired = (message: string) => {
     setPaid(false);
+    setFree(false);
     setNotice(message);
     setCheckout({ status: "idle" });
     goTo("payment");
@@ -160,18 +176,20 @@ export default function RegistrationFlow({
     setCompanyId(null);
     setResumed(false);
     setPaid(false);
+    setFree(!!freePlanId);
     setNotice(null);
     setCheckout({ status: "idle" });
     goTo("company");
   };
 
-  const currentIndex = STEP_INDEX[step];
+  const steps = free ? FREE_PLAN_STEPS : STEPS;
+  const currentIndex = step === "done" ? steps.length : Math.max(0, steps.findIndex((s) => s.id === step));
 
   return (
     <div ref={topRef} className="scroll-mt-24">
       {step !== "done" && (
         <ol className="mb-6 flex items-center gap-3" aria-label="Etapas do cadastro">
-          {STEPS.map((s, i) => {
+          {steps.map((s, i) => {
             const completed = i < currentIndex;
             const current = i === currentIndex;
             return (
@@ -188,13 +206,13 @@ export default function RegistrationFlow({
                 </span>
                 <span className="min-w-0">
                   <span className="block text-[11px] font-extrabold uppercase tracking-[0.1em] text-ink-soft">
-                    Passo {i + 1} de {STEPS.length}
+                    Passo {i + 1} de {steps.length}
                   </span>
                   <span className={clsx("block truncate text-[14px] font-extrabold", current ? "text-ink" : "text-ink-2")}>
                     {s.label}
                   </span>
                 </span>
-                {i < STEPS.length - 1 && <span aria-hidden className="hidden h-[2px] flex-1 rounded-full bg-line sm:block" />}
+                {i < steps.length - 1 && <span aria-hidden className="hidden h-[2px] flex-1 rounded-full bg-line sm:block" />}
               </li>
             );
           })}
@@ -220,6 +238,7 @@ export default function RegistrationFlow({
               plans={plans}
               defaultPlanId={defaultPlanId}
               defaultBillingCycle={defaultBillingCycle}
+              freePlanId={free ? freePlanId : undefined}
               onCreated={handleCompanyCreated}
             />
           </>
@@ -279,6 +298,18 @@ export default function RegistrationFlow({
               description="Falta pouco! Cadastre quem vai administrar a conta da empresa no Encarte Oferta."
             />
             {paid && <Notice tone="success">Pagamento confirmado! Agora é só criar o seu acesso.</Notice>}
+            {free &&
+              (resumed ? (
+                <Notice tone="info">
+                  Encontramos um cadastro em andamento neste navegador: os dados da empresa já foram salvos, falta
+                  criar o seu acesso.{" "}
+                  <button type="button" onClick={restart} className="font-extrabold underline underline-offset-2 hover:text-ink">
+                    Quer cadastrar outra empresa?
+                  </button>
+                </Notice>
+              ) : (
+                <Notice tone="success">Empresa cadastrada no plano gratuito! Agora é só criar o seu acesso.</Notice>
+              ))}
             <AdminForm
               companyId={companyId}
               onCreated={handleAdminCreated}

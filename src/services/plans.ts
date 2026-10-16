@@ -3,7 +3,7 @@ import { plansMock } from "@/mocks/plans";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-/** O plano gratuito existe na API, mas não é oferecido na landing nem no cadastro. */
+/** O plano gratuito não é oferecido na landing: só no cadastro aberto com ?freePlan=true (ver getFreePlan). */
 const HIDDEN_PLANS: PlanName[] = ["free"];
 
 /**
@@ -17,20 +17,30 @@ function sortPlans(plans: PlanResponseDTO[]) {
 }
 
 /**
- * Lê os planos de GET /plans. Sem NEXT_PUBLIC_API_URL, ou se a API falhar,
- * usa o mock com os registros atuais da tabela `plans`.
+ * Lê os planos de GET /plans, sem filtro. Sem NEXT_PUBLIC_API_URL, ou se a API
+ * falhar, usa o mock com os registros atuais da tabela `plans`.
  */
-export async function getPlans(): Promise<PlanResponseDTO[]> {
-  if (!API_URL) return sortPlans(plansMock.data);
+async function fetchPlans(): Promise<PlanResponseDTO[]> {
+  if (!API_URL) return plansMock.data;
 
   try {
     const res = await fetch(`${API_URL.replace(/\/$/, "")}/plans`, { next: { revalidate: 3600 } });
     if (!res.ok) throw new Error(`GET /plans respondeu ${res.status}`);
     const body = (await res.json()) as ListPlansResponse;
-    const plans = sortPlans(body.data);
-    return plans.length ? plans : sortPlans(plansMock.data);
+    return body.data;
   } catch (error) {
     console.warn("[plans] usando mock:", error instanceof Error ? error.message : error);
-    return sortPlans(plansMock.data);
+    return plansMock.data;
   }
+}
+
+/** Os planos oferecidos na landing e no cadastro. */
+export async function getPlans(): Promise<PlanResponseDTO[]> {
+  const plans = sortPlans(await fetchPlans());
+  return plans.length ? plans : sortPlans(plansMock.data);
+}
+
+/** O plano gratuito, para o cadastro aberto com ?freePlan=true. Null se a API não o tiver. */
+export async function getFreePlan(): Promise<PlanResponseDTO | null> {
+  return (await fetchPlans()).find((plan) => plan.name === "free") ?? null;
 }

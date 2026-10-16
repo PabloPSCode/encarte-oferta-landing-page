@@ -2,7 +2,7 @@ import Footer from "@/components/landing/Footer";
 import Header from "@/components/landing/Header";
 import RegistrationFlow from "@/components/registration/RegistrationFlow";
 import { REFUND_POLICY } from "@/content/site";
-import { getPlans } from "@/services/plans";
+import { getFreePlan, getPlans } from "@/services/plans";
 import {
   ArrowLeftIcon,
   BuildingsIcon,
@@ -21,39 +21,59 @@ export const metadata: Metadata = {
   alternates: { canonical: "/cadastro" },
 };
 
-const HOW_IT_WORKS = [
-  {
-    icon: BuildingsIcon,
-    title: "1. Dados da empresa",
-    body: "Escolha o plano, o ramo de atividade e informe os dados do cartão CNPJ, o contato e o endereço da loja.",
-  },
-  {
-    icon: CreditCardIcon,
-    title: "2. Pagamento",
-    body: `Pague o plano com cartão de crédito no ambiente seguro do Stripe. Você tem ${REFUND_POLICY.days} dias de garantia.`,
-  },
-  {
-    icon: UserCircleIcon,
-    title: "3. Administrador",
-    body: "Crie o seu acesso com e-mail e senha. O administrador gerencia a conta e cadastra os usuários da equipe.",
-  },
-  {
-    icon: SparkleIcon,
-    title: "Pronto para criar",
-    body: "Entre no app, configure logo, cores e contatos do encarte e publique as suas ofertas.",
-  },
-];
+/** Os passos do cadastro. No plano gratuito não há o do pagamento. */
+function howItWorks(freePlan: boolean) {
+  const steps = [
+    {
+      icon: BuildingsIcon,
+      title: "Dados da empresa",
+      body: freePlan
+        ? "Escolha o ramo de atividade e informe os dados do cartão CNPJ, o contato e o endereço da loja."
+        : "Escolha o plano, o ramo de atividade e informe os dados do cartão CNPJ, o contato e o endereço da loja.",
+    },
+    ...(freePlan
+      ? []
+      : [
+          {
+            icon: CreditCardIcon,
+            title: "Pagamento",
+            body: `Pague o plano com cartão de crédito no ambiente seguro do Stripe. Você tem ${REFUND_POLICY.days} dias de garantia.`,
+          },
+        ]),
+    {
+      icon: UserCircleIcon,
+      title: "Administrador",
+      body: "Crie o seu acesso com e-mail e senha. O administrador gerencia a conta e cadastra os usuários da equipe.",
+    },
+  ];
+
+  return [
+    ...steps.map((step, i) => ({ ...step, title: `${i + 1}. ${step.title}` })),
+    {
+      icon: SparkleIcon,
+      title: "Pronto para criar",
+      body: "Entre no app, configure logo, cores e contatos do encarte e publique as suas ofertas.",
+    },
+  ];
+}
 
 interface CadastroPageProps {
-  searchParams: Promise<{ plano?: string; ciclo?: string }>;
+  searchParams: Promise<{ plano?: string; ciclo?: string; freePlan?: string }>;
 }
 
 export default async function CadastroPage({
   searchParams,
 }: CadastroPageProps) {
-  const [plans, { plano, ciclo }] = await Promise.all([getPlans(), searchParams]);
+  const [plans, freePlan, { plano, ciclo, freePlan: freePlanParam }] = await Promise.all([
+    getPlans(),
+    getFreePlan(),
+    searchParams,
+  ]);
   const defaultPlanId = plans.find((p) => p.name === plano?.toLowerCase())?.id;
   const defaultBillingCycle = ciclo?.toLowerCase() === "anual" ? "yearly" : "monthly";
+  // ?freePlan=true cadastra a empresa no plano gratuito, sem escolha de plano nem pagamento.
+  // Se a API não tiver o plano gratuito, segue o cadastro com os planos pagos.
+  const freePlanId = freePlanParam?.toLowerCase() === "true" ? freePlan?.id : undefined;
 
   return (
     <div className="overflow-x-clip font-sans">
@@ -79,17 +99,23 @@ export default async function CadastroPage({
               Comece a criar os encartes da sua loja
             </h1>
             <p className="mt-4 max-w-[600px] text-[16px] leading-relaxed text-on-brand-soft text-pretty">
-              São três passos: os dados da sua empresa, o pagamento do plano com
-              cartão de crédito e o seu acesso de administrador. Se precisar parar
-              no meio, tudo bem: ao voltar por este navegador, você continua de onde
-              parou.
+              {freePlanId
+                ? "São dois passos: os dados da sua empresa e o seu acesso de administrador. No plano gratuito não há cobrança nem cartão de crédito."
+                : "São três passos: os dados da sua empresa, o pagamento do plano com cartão de crédito e o seu acesso de administrador."}{" "}
+              Se precisar parar no meio, tudo bem: ao voltar por este navegador,
+              você continua de onde parou.
             </p>
           </div>
         </section>
 
         <div className="mx-auto grid max-w-[1200px] gap-10 px-4 pt-10 sm:px-7 lg:grid-cols-[1fr_320px]">
           <div className="min-w-0">
-            <RegistrationFlow plans={plans} defaultPlanId={defaultPlanId} defaultBillingCycle={defaultBillingCycle} />
+            <RegistrationFlow
+              plans={plans}
+              defaultPlanId={defaultPlanId}
+              defaultBillingCycle={defaultBillingCycle}
+              freePlanId={freePlanId}
+            />
           </div>
 
           <aside className="flex flex-col gap-4 lg:sticky lg:top-24 lg:self-start">
@@ -98,7 +124,7 @@ export default async function CadastroPage({
                 Como funciona
               </p>
               <ul className="mt-4 flex flex-col gap-4">
-                {HOW_IT_WORKS.map(({ icon: ItemIcon, title, body }) => (
+                {howItWorks(!!freePlanId).map(({ icon: ItemIcon, title, body }) => (
                   <li key={title} className="flex gap-3">
                     <span className="grid size-9 shrink-0 place-items-center rounded-[10px] bg-brand-tint text-brand-ink">
                       <ItemIcon size={18} weight="bold" />
