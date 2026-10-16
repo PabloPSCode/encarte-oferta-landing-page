@@ -55,14 +55,9 @@ export function planInclusions(plan: PlanResponseDTO) {
       label: "Remoção de fundo dos produtos",
       included: plan.productBgRemotionInclude,
     },
-    { label: "Publicação no Instagram", included: plan.instagramIntegration },
-    { label: "Publicação no Facebook", included: plan.facebookIntegration },
+    { label: "Publicação no Instagram (em breve)", included: plan.instagramIntegration },
+    { label: "Publicação no Facebook (em breve)", included: plan.facebookIntegration },
     { label: "Envio pelo WhatsApp", included: plan.whatsappIntegration },
-    {
-      label: "Publicação no TikTok (em breve)",
-      included: plan.tiktokIntegration,
-    },
-    { label: "Cadastro inteligente de produtos (em breve)", included: true },
   ];
 }
 
