@@ -1,4 +1,4 @@
-import { COMPANY, SITE, SUPPORT, whatsappLink } from "@/content/site";
+import { SITE, SUPPORT, whatsappLink } from "@/content/site";
 import { EnvelopeSimple, WhatsappLogo } from "@phosphor-icons/react/dist/ssr";
 import Link from "next/link";
 import Logo from "./Logo";
@@ -64,10 +64,8 @@ export default function Footer() {
       <div className="border-t border-white/10">
         <div className="mx-auto flex max-w-[1200px] flex-col gap-2 px-4 py-6 text-[12px] text-white/80 sm:flex-row sm:items-center sm:justify-between sm:px-7">
           <p>
-            © {year} {SITE.name}. Operado por {COMPANY.legalName}
-            {COMPANY.cnpj && ` — CNPJ ${COMPANY.cnpj}`}.
+            © {year} {SITE.name}. Todos os direitos reservados.
           </p>
-          <p>Todos os direitos reservados.</p>
         </div>
       </div>
     </footer>
