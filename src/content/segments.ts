@@ -29,6 +29,12 @@ import {
 /** Todas as artes de public/estabilishments saem do upscale nesse tamanho. */
 export const FLYER_SIZE = { width: 1080, height: 1331 } as const;
 
+/** Vídeo das páginas /videos/[segmento] cujo segmento ainda não tem `video` próprio: o comercial do Encarte Oferta. */
+export const DEFAULT_SEGMENT_VIDEO = {
+  url: "https://media.encarteoferta.com.br/encarte-oferta-comercial-final.mp4",
+  poster: "/media/encarte-oferta-flow-poster.webp",
+};
+
 export interface SegmentPage {
   slug: string;
   /** Nome no plural, usado nos cards da seção Segmentos e no "Veja também". */
@@ -49,6 +55,10 @@ export interface SegmentPage {
   shift: { before: string[]; after: string[] };
   closing: { title: string; body: string };
   whatsappMessage: string;
+  /** A loja com artigo e possessivo, para completar a mensagem da página de vídeo: "para o meu açougue". */
+  myStore: string;
+  /** Vídeo do anúncio, exibido em /videos/[segmento]. Sem ele, a página usa DEFAULT_SEGMENT_VIDEO. */
+  video?: { url: string; poster?: string };
 }
 
 export const SEGMENT_PAGES: SegmentPage[] = [
@@ -122,6 +132,7 @@ export const SEGMENT_PAGES: SegmentPage[] = [
       body: "Fale com a nossa equipe, escolha o plano e publique o próximo encarte do seu supermercado hoje mesmo.",
     },
     whatsappMessage: "Olá! Tenho um supermercado e quero conhecer o Encarte Oferta.",
+    myStore: "o meu supermercado",
   },
   {
     slug: "acougues",
@@ -193,6 +204,7 @@ export const SEGMENT_PAGES: SegmentPage[] = [
       body: "Fale com a nossa equipe, escolha o plano e publique o primeiro encarte do seu açougue antes do fim de semana.",
     },
     whatsappMessage: "Olá! Tenho um açougue e quero conhecer o Encarte Oferta.",
+    myStore: "o meu açougue",
   },
   {
     slug: "feiras-e-sacoloes",
@@ -285,6 +297,7 @@ export const SEGMENT_PAGES: SegmentPage[] = [
       body: "Fale com a nossa equipe e publique o primeiro encarte da sua feira ou sacolão ainda hoje.",
     },
     whatsappMessage: "Olá! Tenho um sacolão/hortifrúti e quero conhecer o Encarte Oferta.",
+    myStore: "o meu sacolão",
   },
   {
     slug: "pet-shops",
@@ -356,6 +369,7 @@ export const SEGMENT_PAGES: SegmentPage[] = [
       body: "Fale com a nossa equipe e publique o primeiro encarte do seu pet shop ainda hoje.",
     },
     whatsappMessage: "Olá! Tenho um pet shop e quero conhecer o Encarte Oferta.",
+    myStore: "o meu pet shop",
   },
   {
     slug: "lojas-de-materiais-de-construcao",
@@ -427,6 +441,7 @@ export const SEGMENT_PAGES: SegmentPage[] = [
       body: "Fale com a nossa equipe e coloque a primeira campanha da sua loja no ar ainda hoje.",
     },
     whatsappMessage: "Olá! Tenho uma loja de materiais de construção e quero conhecer o Encarte Oferta.",
+    myStore: "a minha loja de materiais de construção",
   },
   {
     slug: "lojas-de-pneus",
@@ -498,6 +513,7 @@ export const SEGMENT_PAGES: SegmentPage[] = [
       body: "Fale com a nossa equipe e publique o primeiro encarte da sua loja de pneus ainda esta semana.",
     },
     whatsappMessage: "Olá! Tenho uma loja de pneus e quero conhecer o Encarte Oferta.",
+    myStore: "a minha loja de pneus",
   },
   {
     slug: "lojas-de-epis",
@@ -569,6 +585,7 @@ export const SEGMENT_PAGES: SegmentPage[] = [
       body: "Fale com a nossa equipe e monte o primeiro encarte de ofertas da sua loja ainda hoje.",
     },
     whatsappMessage: "Olá! Tenho uma loja de EPIs e quero conhecer o Encarte Oferta.",
+    myStore: "a minha loja de EPIs",
   },
   {
     slug: "lojas-de-suplementos",
@@ -640,6 +657,7 @@ export const SEGMENT_PAGES: SegmentPage[] = [
       body: "Fale com a nossa equipe e publique o primeiro encarte da sua loja de suplementos hoje.",
     },
     whatsappMessage: "Olá! Tenho uma loja de suplementos e quero conhecer o Encarte Oferta.",
+    myStore: "a minha loja de suplementos",
   },
 ];
 

@@ -8,6 +8,7 @@ import Warranty from "@/components/landing/sections/Warranty";
 import { REFUND_POLICY, SUPPORT, whatsappLink } from "@/content/site";
 import { FLYER_SIZE, SEGMENT_PAGES, type SegmentPage } from "@/content/segments";
 import { ArrowRight, Check, Warning, X } from "@phosphor-icons/react/dist/ssr";
+import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
 import type { CSSProperties } from "react";
@@ -23,7 +24,7 @@ const STARBURST = (() => {
   return `polygon(${points.join(",")})`;
 })();
 
-const HALFTONE =
+export const HALFTONE =
   "pointer-events-none absolute inset-0 [background-image:radial-gradient(#1A1400_1.2px,transparent_1.3px)] [background-size:18px_18px]";
 
 export default function SegmentLanding({ segment }: { segment: SegmentPage }) {
@@ -49,8 +50,22 @@ export default function SegmentLanding({ segment }: { segment: SegmentPage }) {
   );
 }
 
+/** O título do segmento, com o trecho do meio no selo vermelho. O tamanho vem de `className`. */
+export function SegmentHeadline({ headline, className }: { headline: SegmentPage["headline"]; className?: string }) {
+  const [before, highlight, after] = headline;
+
+  return (
+    <h1 className={clsx("font-black tracking-[-0.035em] text-on-brand text-balance", className)}>
+      {before}{" "}
+      <span className="relative inline-block -rotate-2 rounded-[10px] bg-accent px-3 pb-1 text-white shadow-[0_8px_0_#9A1414]">
+        {highlight}
+      </span>
+      {/^[.,!?]/.test(after) ? after : ` ${after}`}
+    </h1>
+  );
+}
+
 function SegmentHero({ segment, cta }: { segment: SegmentPage; cta: string }) {
-  const [before, highlight, after] = segment.headline;
   const trust = ["Sem depender de designer", "Sem instalar nada", `Garantia de ${REFUND_POLICY.days} dias`];
 
   return (
@@ -83,13 +98,10 @@ function SegmentHero({ segment, cta }: { segment: SegmentPage; cta: string }) {
           <p className="mt-8 inline-flex rounded-full bg-white/70 px-3.5 py-1.5 text-[11.5px] font-extrabold uppercase tracking-[0.1em] text-on-brand">
             {segment.eyebrow}
           </p>
-          <h1 className="mt-5 text-[36px] font-black leading-[1.08] tracking-[-0.035em] text-on-brand text-balance sm:text-[50px] lg:text-[54px]">
-            {before}{" "}
-            <span className="relative inline-block -rotate-2 rounded-[10px] bg-accent px-3 pb-1 text-white shadow-[0_8px_0_#9A1414]">
-              {highlight}
-            </span>
-            {/^[.,!?]/.test(after) ? after : ` ${after}`}
-          </h1>
+          <SegmentHeadline
+            headline={segment.headline}
+            className="mt-5 text-[36px] leading-[1.08] sm:text-[50px] lg:text-[54px]"
+          />
           <p className="mt-6 max-w-[580px] text-[16.5px] font-medium leading-relaxed text-on-brand-soft text-pretty">
             {segment.lead}
           </p>
