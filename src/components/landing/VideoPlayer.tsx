@@ -33,7 +33,7 @@ export default function VideoPlayer({ videoUrl, poster, title, className }: Vide
         src={videoUrl}
         poster={poster}
         aria-label={title}
-        controls={started}
+        controls={false}
         playsInline
         preload="metadata"
         className="block h-auto max-h-[65svh] w-auto max-w-full"
