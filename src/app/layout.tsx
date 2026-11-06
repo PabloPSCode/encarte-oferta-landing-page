@@ -3,6 +3,8 @@ import type { Metadata, Viewport } from "next";
 import { Montserrat } from "next/font/google";
 //@ts-ignore
 import "../styles/globals.css";
+import CookieNotice from "@/components/landing/CookieNotice";
+import MetaPixel from "@/components/landing/MetaPixel";
 import { SITE } from "@/content/site";
 
 const montserrat = Montserrat({
@@ -39,7 +41,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR" className={montserrat.variable}>
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        {children}
+        <MetaPixel />
+        <CookieNotice />
+      </body>
     </html>
   );
 }

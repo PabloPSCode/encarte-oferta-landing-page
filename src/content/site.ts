@@ -11,6 +11,8 @@ export const SITE = {
   name: "Encarte Oferta",
   url: process.env.NEXT_PUBLIC_SITE_URL || "https://encarteoferta.com.br",
   appUrl: process.env.NEXT_PUBLIC_APP_URL || "https://app.encarteoferta.com.br",
+  /** Pixel "Encarte Oferta - Landing Page". O ID não é segredo: fica visível nas requisições do site. */
+  metaPixelId: process.env.NEXT_PUBLIC_META_PIXEL_ID || "1745770560887331",
 };
 
 /**
@@ -34,6 +36,8 @@ export const SUPPORT = {
 };
 
 export const LEGAL_UPDATED_AT = "23 de setembro de 2026";
+
+export const PRIVACY_UPDATED_AT = "6 de novembro de 2026";
 
 /**
  * Política de cancelamento (encarte-oferta-api: src/domain/companies/

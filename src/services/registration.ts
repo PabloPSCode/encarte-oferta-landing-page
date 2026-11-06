@@ -20,6 +20,9 @@ export const PENDING_BILLING_CYCLE_KEY = "encarte-oferta:cadastro:billingCycle";
 /** Marca a empresa cadastrada no plano gratuito: ela não tem pagamento, só falta o administrador. */
 export const PENDING_FREE_PLAN_KEY = "encarte-oferta:cadastro:freePlan";
 
+/** Plano e valor do pagamento em andamento, para informar a compra na volta do Stripe. */
+export const PENDING_CHECKOUT_KEY = "encarte-oferta:cadastro:checkout";
+
 /**
  * Erro de uma rota de cadastro, já com a mensagem em português para a tela.
  * `fieldErrors` traz os erros de validação por campo (ZodValidationPipe da API).

@@ -8,6 +8,8 @@ export const metadata: Metadata = {
   description: "Confirmação do pagamento da assinatura do Encarte Oferta.",
   alternates: { canonical: "/pagamento-sucesso" },
   robots: { index: false, follow: false },
+  // A URL traz ?session_id=: ela não pode chegar à próxima página em document.referrer, que o Pixel envia à Meta.
+  referrer: "origin",
 };
 
 interface PaymentSuccessPageProps {

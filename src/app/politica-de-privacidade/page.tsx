@@ -1,5 +1,5 @@
 import LegalPage, { type LegalSection } from "@/components/legal/LegalPage";
-import { COMPANY, SITE, SUPPORT } from "@/content/site";
+import { COMPANY, PRIVACY_UPDATED_AT, SITE, SUPPORT } from "@/content/site";
 import type { Metadata } from "next";
 import Link from "next/link";
 
@@ -104,7 +104,10 @@ const sections: LegalSection[] = [
             resposta);
           </li>
           <li>Histórico de consumo de créditos do plano;</li>
-          <li>Códigos de recuperação de senha solicitados.</li>
+          <li>Códigos de recuperação de senha solicitados;</li>
+          <li>
+            Os dados enviados à Meta pelo Facebook Pixel (Meta Pixel), descritos na seção “Cookies e armazenamento local”.
+          </li>
         </ul>
 
         <h3>3.6. Atendimento</h3>
@@ -164,6 +167,10 @@ const sections: LegalSection[] = [
             <td>Cumprimento de obrigação legal (art. 7º, II; Marco Civil da Internet, art. 15) e legítimo interesse (art. 7º, IX)</td>
           </tr>
           <tr>
+            <td>Medir as ações dos usuários neste site e o resultado dos nossos anúncios no Facebook e no Instagram, e direcioná-los a quem visitou o site</td>
+            <td>Legítimo interesse (art. 7º, IX)</td>
+          </tr>
+          <tr>
             <td>Defender nossos direitos em processos judiciais, administrativos ou arbitrais</td>
             <td>Exercício regular de direitos (art. 7º, VI)</td>
           </tr>
@@ -215,6 +222,14 @@ const sections: LegalSection[] = [
               <td>A mídia, a legenda e o canal escolhidos para cada publicação</td>
             </tr>
             <tr>
+              <td>Meta Platforms (Facebook Pixel)</td>
+              <td>Medição das ações no site e dos anúncios, e direcionamento de anúncios, a menos que você recuse</td>
+              <td>
+                Endereço das páginas visitadas, endereço IP, dados do navegador, identificadores dos cookies e os eventos de
+                conversão, com o plano e o valor da compra
+              </td>
+            </tr>
+            <tr>
               <td>ReceitaWS e BrasilAPI</td>
               <td>Consulta e validação do CNPJ</td>
               <td>O número do CNPJ informado no cadastro</td>
@@ -241,9 +256,10 @@ const sections: LegalSection[] = [
     content: (
       <p>
         Alguns fornecedores listados acima, como OpenAI, ElevenLabs, Cloudflare, Resend e Meta, podem processar dados em
-        servidores fora do Brasil. Nesses casos, a transferência ocorre para a execução do contrato com você e com base
-        nos mecanismos previstos no art. 33 da LGPD, como cláusulas contratuais e garantias de proteção oferecidas por
-        esses fornecedores.
+        servidores fora do Brasil. Nesses casos, a transferência ocorre para a execução do contrato com você ou, no caso
+        do Facebook Pixel, para as finalidades descritas na seção “Cookies e armazenamento local”, e com base nos
+        mecanismos previstos no art. 33 da LGPD, como cláusulas contratuais e garantias de proteção oferecidas por esses
+        fornecedores.
       </p>
     ),
   },
@@ -295,6 +311,9 @@ const sections: LegalSection[] = [
           </li>
           <li>
             <strong>Sessões</strong>: o acesso à plataforma expira em 15 dias, e depois disso é preciso fazer login de novo.
+          </li>
+          <li>
+            <strong>Dados enviados pelo Facebook Pixel</strong>: guardados pela Meta, conforme a política de privacidade dela.
           </li>
           <li>
             <strong>Dados necessários ao cumprimento de obrigações legais ou à defesa de direitos</strong>: pelo prazo
@@ -351,14 +370,44 @@ const sections: LegalSection[] = [
     title: "Cookies e armazenamento local",
     content: (
       <>
+        <h3>Cookies de publicidade</h3>
         <p>
-          Este site não utiliza cookies de publicidade nem ferramentas de rastreamento de terceiros. A plataforma usa o{" "}
-          <strong>armazenamento local do navegador</strong> (localStorage) para:
+          Neste site, usamos o Facebook Pixel (Meta Pixel), da Meta Platforms, para medir as ações dos usuários e o resultado
+          dos nossos anúncios no Facebook e no Instagram, e para direcioná-los a quem visitou o site.{" "}
+          <strong>O Pixel é ativado quando você acessa o site, a menos que você o recuse</strong>, com base no nosso legítimo
+          interesse em medir e divulgar o nosso serviço (art. 7º, IX, da LGPD).
+        </p>
+        <p>
+          O Pixel grava o cookie _fbp e, se você chegou por um anúncio, o cookie _fbc. Ele envia à Meta o
+          endereço das páginas visitadas, o endereço IP, dados do navegador e os identificadores desses cookies. Também
+          informa quando você clica para falar com a nossa equipe pelo WhatsApp, inicia o pagamento, conclui a compra (com o
+          plano e o valor) ou conclui o cadastro.
+        </p>
+        <p>
+          O que você digita nos formulários não é enviado à Meta. Nas páginas de retorno do pagamento, o script do Pixel não
+          é carregado: enviamos apenas o aviso de compra ou de cadastro concluído, sem o identificador do pagamento.
+        </p>
+        <p>
+          Para recusar, clique em <strong>Não permitir</strong> no aviso de cookies. A partir daí, o Pixel deixa de enviar
+          dados neste navegador e os cookies dele são apagados. A recusa não alcança o que foi enviado antes dela, como o
+          registro da página em que você chegou ao site. Se você já fechou o aviso, apague os dados de navegação deste site
+          para que ele apareça de novo. Apagar esses dados também desfaz uma recusa anterior.
+        </p>
+        <p>
+          Você também pode bloquear cookies e rastreadores nas configurações do navegador, ajustar suas preferências de
+          anúncios na sua conta da Meta e exercer seus direitos, inclusive o de oposição, pelos canais indicados na seção
+          “Seus direitos como titular”.
+        </p>
+
+        <h3>Armazenamento local</h3>
+        <p>
+          A plataforma usa o <strong>armazenamento local do navegador</strong> (localStorage) para:
         </p>
         <ul>
           <li>Manter você conectado durante a sessão;</li>
           <li>Guardar o rascunho do encarte em edição;</li>
-          <li>Lembrar preferências de interface, como o tema claro ou escuro e o menu recolhido.</li>
+          <li>Lembrar preferências de interface, como o tema claro ou escuro e o menu recolhido;</li>
+          <li>Guardar a sua resposta ao aviso sobre cookies.</li>
         </ul>
         <p>
           Esses dados ficam no seu dispositivo e são essenciais ao funcionamento do serviço. Você pode apagá-los limpando os
@@ -379,6 +428,7 @@ const sections: LegalSection[] = [
           <li>A anonimização, o bloqueio ou a eliminação de dados desnecessários, excessivos ou tratados em desconformidade;</li>
           <li>A portabilidade dos dados a outro fornecedor, observados os segredos comercial e industrial;</li>
           <li>A eliminação dos dados tratados com base no consentimento, quando for o caso;</li>
+          <li>A oposição a tratamento feito sem consentimento, em caso de descumprimento da LGPD (art. 18, § 2º);</li>
           <li>A informação sobre com quem compartilhamos seus dados;</li>
           <li>A revisão de decisões tomadas unicamente com base em tratamento automatizado.</li>
         </ul>
@@ -454,6 +504,7 @@ export default function PrivacyPolicyPage() {
       eyebrow="Privacidade e LGPD"
       title="Política de Privacidade"
       related={{ href: "/termos-de-uso", label: "Termos de Uso" }}
+      updatedAt={PRIVACY_UPDATED_AT}
       intro={
         <p>
           Esta Política explica, de forma clara, quais dados pessoais o {SITE.name} trata, para quê, com quem compartilha,

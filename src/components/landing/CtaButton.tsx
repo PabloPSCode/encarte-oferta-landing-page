@@ -27,10 +27,14 @@ export default function CtaButton({
   external = false,
   className,
 }: CtaButtonProps) {
+  /** Todo CTA para o WhatsApp é um contato de venda: o MetaPixel o registra como Lead. */
+  const isLead = href.startsWith("https://wa.me/");
+
   return (
     <a
       href={href}
       {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+      data-meta-lead={isLead || undefined}
       className={clsx(
         "group inline-flex items-center justify-center gap-2.5 rounded-[13px] px-7 py-4 text-[15px] font-extrabold transition-all duration-200 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand/40 active:scale-[0.98]",
         styles[variant],

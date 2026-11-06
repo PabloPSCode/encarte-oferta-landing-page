@@ -195,6 +195,7 @@ export default function PlansGrid({ plans }: { plans: PlanResponseDTO[] }) {
                 )}
                 target="_blank"
                 rel="noopener noreferrer"
+                data-meta-lead
                 className={clsx(
                   "mt-7 rounded-[12px] px-5 py-3.5 text-center text-[14px] font-extrabold transition-all",
                   isPopular
@@ -242,6 +243,7 @@ export default function PlansGrid({ plans }: { plans: PlanResponseDTO[] }) {
           )}
           target="_blank"
           rel="noopener noreferrer"
+          data-meta-lead
           className="shrink-0 rounded-[12px] bg-on-brand px-6 py-3.5 text-center text-[14px] font-extrabold text-brand transition-colors hover:bg-black"
         >
           Falar com a equipe

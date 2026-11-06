@@ -1,4 +1,5 @@
 import type { PlanResponseDTO } from "@/dtos/plans";
+import type { BillingCycle } from "@/dtos/registration";
 import { REFUND_POLICY } from "@/content/site";
 
 /**
@@ -23,6 +24,11 @@ export function annualDiscountPercentage(plan: PlanResponseDTO): number | null {
 /** Valor anual dividido em 12 meses, em centavos. */
 export function monthlyEquivalentInCents(plan: PlanResponseDTO) {
   return Math.round(plan.yearValueInCents / 12);
+}
+
+/** O que é cobrado de uma vez no ciclo: a mensalidade, ou o ano inteiro à vista. */
+export function chargeInCents(plan: PlanResponseDTO, billingCycle: BillingCycle) {
+  return billingCycle === "yearly" ? plan.yearValueInCents : plan.monthValueInCents;
 }
 
 /** A cota de produtos personalizados só aparece quando o plano a define. */

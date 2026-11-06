@@ -3,8 +3,10 @@
 import { REFUND_POLICY, SITE, SUPPORT, whatsappLink } from "@/content/site";
 import type { PlanResponseDTO } from "@/dtos/plans";
 import type { BillingCycle } from "@/dtos/registration";
+import { checkoutParams, metaPixel } from "@/services/metaPixel";
 import { pendingRegistration } from "@/services/pendingRegistration";
 import { RegistrationError, startRegistrationCheckout } from "@/services/registration";
+import { chargeInCents } from "@/utils/plans";
 import {
   Check,
   CheckCircle,
@@ -89,6 +91,9 @@ export default function RegistrationFlow({
   const goToCheckout = useCallback(
     async (id: string, cycle: BillingCycle) => {
       setCheckout({ status: "redirecting" });
+      // Antes da chamada à API: o redirecionamento para o Stripe poderia cancelar o envio.
+      const pendingCheckout = pendingRegistration.getCheckout();
+      metaPixel.track("InitiateCheckout", pendingCheckout ? checkoutParams(pendingCheckout) : undefined);
       try {
         const { checkoutUrl } = await startRegistrationCheckout(id, cycle);
         window.location.assign(checkoutUrl);
@@ -145,8 +150,10 @@ export default function RegistrationFlow({
     }
   }, [paidCompanyId, freePlanId]);
 
-  const handleCompanyCreated = (id: string, cycle: BillingCycle) => {
+  const handleCompanyCreated = (id: string, cycle: BillingCycle, planId: string) => {
+    const plan = free ? undefined : plans.find((p) => p.id === planId);
     pendingRegistration.set({ companyId: id, billingCycle: cycle, freePlan: free });
+    pendingRegistration.setCheckout(plan ? { planName: plan.name, valueInCents: chargeInCents(plan, cycle) } : null);
     setCompanyId(id);
     setBillingCycle(cycle);
     setResumed(false);
@@ -157,6 +164,7 @@ export default function RegistrationFlow({
   };
 
   const handleAdminCreated = (created: AdminCreatedResult) => {
+    metaPixel.track("CompleteRegistration", { content_name: free ? "gratuito" : "pago" });
     pendingRegistration.clear();
     setCompanyId(null);
     setResult(created);

@@ -33,7 +33,7 @@ export default async function Plans() {
       <div className="mt-14 rounded-[24px] border border-line bg-surface-2 p-6 sm:p-8">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <h3 className="text-[20px] font-black tracking-[-0.02em] text-ink">Como funcionam os créditos</h3>
-          <a href={PLANS_LINK} target="_blank" rel="noopener noreferrer" className="text-[13.5px] font-extrabold text-accent hover:underline">
+          <a href={PLANS_LINK} target="_blank" rel="noopener noreferrer" data-meta-lead className="text-[13.5px] font-extrabold text-accent hover:underline">
             Tirar dúvidas sobre os planos pelo WhatsApp →
           </a>
         </div>

@@ -1,12 +1,13 @@
 'use client';
 
 import clsx from "clsx";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 
 export interface CookiesCardProps {
-  title: string;
+  /** Título do aviso (opcional). */
+  title?: string;
   /** Descrição do item (opcional). */
-  description?: string;
+  description?: ReactNode;
   /** Classes adicionais para customização. */
   containerClassName?: string;
   /** Classes adicionais para o título. */
@@ -19,6 +20,12 @@ export interface CookiesCardProps {
   onConfirm?: () => void;
   /** Classes adicionais para o botão */
   buttonClassName?: string;
+  /** Título do botão de recusa. Sem ele, o botão não aparece. */
+  declineButtonTitle?: string;
+  /** Ação ao clicar no botão de recusa */
+  onDecline?: () => void;
+  /** Classes adicionais para o botão de recusa */
+  declineButtonClassName?: string;
 }
 
 export default function CookiesCard({
@@ -30,6 +37,9 @@ export default function CookiesCard({
   buttonClassName,
   buttonTitle = "Entendi",
   onConfirm,
+  declineButtonTitle,
+  onDecline,
+  declineButtonClassName,
 }: CookiesCardProps) {
   const [showCard, setShowCard] = useState(true);
 
@@ -38,6 +48,11 @@ export default function CookiesCard({
     if (onConfirm) {
       onConfirm();
     }
+  };
+
+  const handleDecline = () => {
+    setShowCard(false);
+    onDecline?.();
   };
 
   return (
@@ -51,14 +66,16 @@ export default function CookiesCard({
     >
       <div className="flex flex-col sm:flex-row sm:justify-between items-center gap-4">
         <div className="flex flex-col gap-1">
-          <h3
-            className={clsx(
-              "text-base sm:text-lg font-semibold text-foreground",
-              titleClassName
-            )}
-          >
-            {title}
-          </h3>
+          {title && (
+            <h3
+              className={clsx(
+                "text-base sm:text-lg font-semibold text-foreground",
+                titleClassName
+              )}
+            >
+              {title}
+            </h3>
+          )}
           {description && (
             <p
               className={clsx(
@@ -70,15 +87,28 @@ export default function CookiesCard({
             </p>
           )}
         </div>
-        <button
-          className={clsx(
-            "flex items-center justify-center px-3 py-2 rounded-md w-40 bg-primary-500 text-white text-sm sm:text-base",
-            buttonClassName
+        <div className="flex w-full shrink-0 gap-2 sm:w-auto">
+          {declineButtonTitle && (
+            <button
+              className={clsx(
+                "flex min-w-0 flex-1 items-center justify-center rounded-md border border-foreground px-3 py-2 text-sm font-semibold text-foreground sm:w-40 sm:flex-none sm:text-base",
+                declineButtonClassName
+              )}
+              onClick={handleDecline}
+            >
+              {declineButtonTitle}
+            </button>
           )}
-          onClick={handleConfirm}
-        >
-          {buttonTitle}
-        </button>
+          <button
+            className={clsx(
+              "flex min-w-0 flex-1 items-center justify-center rounded-md bg-brand px-3 py-2 text-sm font-semibold text-on-brand sm:w-40 sm:flex-none sm:text-base",
+              buttonClassName
+            )}
+            onClick={handleConfirm}
+          >
+            {buttonTitle}
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -21,7 +21,7 @@ const meta: Meta<typeof CookiesCard> = {
           `- Posição inferior da página (usa *absolute bottom-0* dentro de um container relativo)\n` +
           `- Botão de confirmação com callback (**onConfirm**)\n\n` +
           `### Props principais\n` +
-          `- **title**: título do aviso\n` +
+          `- **title?**: título do aviso\n` +
           `- **description?**: texto explicativo (LGPD)\n` +
           `- **buttonTitle?**: rótulo do botão (padrão: "Entendi")\n` +
           `- **onConfirm?**: chamado ao confirmar\n` +
@@ -40,6 +40,8 @@ const meta: Meta<typeof CookiesCard> = {
     description: { control: "text" },
     buttonTitle: { control: "text" },
     onConfirm: { action: "confirmado" },
+    declineButtonTitle: { control: "text" },
+    onDecline: { action: "recusado" },
     containerClassName: { control: "text" },
     titleClassName: { control: "text" },
     descriptionClassName: { control: "text" },
@@ -65,6 +67,18 @@ export default meta;
 /* ----------------------------- Stories ----------------------------- */
 
 export const Default: Story = {};
+
+export const WithoutTitle: Story = {
+  args: {
+    title: undefined,
+  },
+};
+
+export const WithDecline: Story = {
+  args: {
+    declineButtonTitle: "Não permitir",
+  },
+};
 
 export const CustomClasses: Story = {
   args: {

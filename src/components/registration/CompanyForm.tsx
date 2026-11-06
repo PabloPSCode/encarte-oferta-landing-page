@@ -82,7 +82,7 @@ interface CompanyFormProps {
   /** Cadastro no plano gratuito: a empresa entra nele e a escolha de plano e de cobrança não aparece. */
   freePlanId?: string;
   /** A empresa foi criada: o cadastro segue para o pagamento no ciclo escolhido (ou, no gratuito, para o administrador). */
-  onCreated: (companyId: string, billingCycle: BillingCycle) => void;
+  onCreated: (companyId: string, billingCycle: BillingCycle, planId: string) => void;
 }
 
 const BILLING_CYCLES: { value: BillingCycle; label: string }[] = [
@@ -198,7 +198,7 @@ export default function CompanyForm({
 
     try {
       const company = await createCompany(data);
-      onCreated(company.id, values.billingCycle);
+      onCreated(company.id, values.billingCycle, data.planId);
     } catch (error) {
       const err =
         error instanceof RegistrationError

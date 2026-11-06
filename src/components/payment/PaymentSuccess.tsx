@@ -4,6 +4,7 @@ import RegistrationFlow from "@/components/registration/RegistrationFlow";
 import { SITE, SUPPORT, whatsappLink } from "@/content/site";
 import type { PlanResponseDTO } from "@/dtos/plans";
 import type { CheckoutConfirmationDTO } from "@/dtos/registration";
+import { checkoutParams, metaPixel } from "@/services/metaPixel";
 import { pendingRegistration } from "@/services/pendingRegistration";
 import { RegistrationError, confirmCheckoutSession } from "@/services/registration";
 import { CheckCircle, CircleNotch, HourglassMedium, WarningCircle, WhatsappLogo } from "@phosphor-icons/react";
@@ -46,6 +47,12 @@ export default function PaymentSuccess({
       pendingRegistration.clear();
       setState({ status: "subscribed" });
     } else {
+      // Sai do armazenamento depois de enviada, para recarregar a página não contar outra compra.
+      const checkout = pendingRegistration.getCheckout();
+      if (checkout) {
+        metaPixel.track("Purchase", checkoutParams(checkout));
+        pendingRegistration.setCheckout(null);
+      }
       setState({ status: "registration", companyId: confirmation.companyId });
     }
 

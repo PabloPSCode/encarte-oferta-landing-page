@@ -1,5 +1,10 @@
 import type { BillingCycle } from "@/dtos/registration";
-import { PENDING_BILLING_CYCLE_KEY, PENDING_COMPANY_KEY, PENDING_FREE_PLAN_KEY } from "@/services/registration";
+import {
+  PENDING_BILLING_CYCLE_KEY,
+  PENDING_CHECKOUT_KEY,
+  PENDING_COMPANY_KEY,
+  PENDING_FREE_PLAN_KEY,
+} from "@/services/registration";
 
 /**
  * O cadastro em andamento neste navegador: a empresa já criada e o ciclo de
@@ -12,6 +17,12 @@ export interface PendingRegistration {
   billingCycle: BillingCycle;
   /** Empresa no plano gratuito: o cadastro retoma direto no passo do administrador. */
   freePlan: boolean;
+}
+
+/** O que será cobrado no Stripe Checkout: a API não informa o valor na confirmação do pagamento. */
+export interface PendingCheckout {
+  planName: string;
+  valueInCents: number;
 }
 
 export const pendingRegistration = {
@@ -42,6 +53,21 @@ export const pendingRegistration = {
       window.localStorage.removeItem(PENDING_COMPANY_KEY);
       window.localStorage.removeItem(PENDING_BILLING_CYCLE_KEY);
       window.localStorage.removeItem(PENDING_FREE_PLAN_KEY);
+      window.localStorage.removeItem(PENDING_CHECKOUT_KEY);
+    } catch {}
+  },
+  getCheckout(): PendingCheckout | null {
+    try {
+      const value = window.localStorage.getItem(PENDING_CHECKOUT_KEY);
+      return value ? (JSON.parse(value) as PendingCheckout) : null;
+    } catch {
+      return null;
+    }
+  },
+  setCheckout(value: PendingCheckout | null) {
+    try {
+      if (value) window.localStorage.setItem(PENDING_CHECKOUT_KEY, JSON.stringify(value));
+      else window.localStorage.removeItem(PENDING_CHECKOUT_KEY);
     } catch {}
   },
 };

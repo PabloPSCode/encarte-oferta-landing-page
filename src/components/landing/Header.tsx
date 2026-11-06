@@ -52,6 +52,7 @@ export default function Header() {
             href={CTA_LINK}
             target="_blank"
             rel="noopener noreferrer"
+            data-meta-lead
             className="rounded-[11px] bg-accent px-5 py-2.5 text-[13px] font-extrabold text-white transition-colors hover:bg-black"
           >
             Quero meus encartes
@@ -89,6 +90,7 @@ export default function Header() {
                 href={CTA_LINK}
                 target="_blank"
                 rel="noopener noreferrer"
+                data-meta-lead
                 className="rounded-[11px] bg-accent py-3 text-center text-[13px] font-extrabold text-white"
               >
                 Quero meus encartes
