@@ -189,12 +189,12 @@ export default function PlansGrid({ plans }: { plans: PlanResponseDTO[] }) {
                 ))}
               </ul>
 
-              <a
-                href={whatsappLink(
-                  `Olá! Quero assinar o plano ${title} do Encarte Oferta${hasAnnualOffer ? ` (${isYear ? "pagamento anual" : "pagamento mensal"})` : ""}.`,
-                )}
-                target="_blank"
-                rel="noopener noreferrer"
+              {/* /cadastro já vem com o plano e o ciclo escolhidos aqui. */}
+              <Link
+                href={{
+                  pathname: "/cadastro",
+                  query: { plano: plan.name, ciclo: isYear ? "anual" : "mensal" },
+                }}
                 data-meta-lead
                 className={clsx(
                   "mt-7 rounded-[12px] px-5 py-3.5 text-center text-[14px] font-extrabold transition-all",
@@ -204,7 +204,7 @@ export default function PlansGrid({ plans }: { plans: PlanResponseDTO[] }) {
                 )}
               >
                 Assinar {title}
-              </a>
+              </Link>
             </article>
           );
         })}
