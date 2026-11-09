@@ -2,7 +2,6 @@
 
 import RegistrationFlow from "@/components/registration/RegistrationFlow";
 import { SITE, SUPPORT, whatsappLink } from "@/content/site";
-import type { PlanResponseDTO } from "@/dtos/plans";
 import type { CheckoutConfirmationDTO } from "@/dtos/registration";
 import { checkoutParams, metaPixel } from "@/services/metaPixel";
 import { pendingRegistration } from "@/services/pendingRegistration";
@@ -29,13 +28,7 @@ type State =
  * pela API (nunca só pela URL) e, se a empresa ainda não tem administrador, o
  * cadastro segue aqui mesmo para o passo do administrador.
  */
-export default function PaymentSuccess({
-  sessionId,
-  plans,
-}: {
-  sessionId: string | null;
-  plans: PlanResponseDTO[];
-}) {
+export default function PaymentSuccess({ sessionId }: { sessionId: string | null }) {
   const [state, setState] = useState<State>(
     sessionId ? { status: "confirming" } : { status: "error", message: "Este link de pagamento não é válido." },
   );
@@ -90,7 +83,7 @@ export default function PaymentSuccess({
   }, [confirm]);
 
   if (state.status === "registration") {
-    return <RegistrationFlow plans={plans} paidCompanyId={state.companyId} />;
+    return <RegistrationFlow paidCompanyId={state.companyId} />;
   }
 
   return (

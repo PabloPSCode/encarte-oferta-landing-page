@@ -1,12 +1,12 @@
 "use client";
 
-import { REFUND_POLICY, SITE, SUPPORT, whatsappLink } from "@/content/site";
+import { REFUND_POLICY, SITE, SUPPORT, formatBRL, whatsappLink } from "@/content/site";
 import type { PlanResponseDTO } from "@/dtos/plans";
 import type { BillingCycle } from "@/dtos/registration";
 import { checkoutParams, metaPixel } from "@/services/metaPixel";
 import { pendingRegistration } from "@/services/pendingRegistration";
 import { RegistrationError, startRegistrationCheckout } from "@/services/registration";
-import { chargeInCents } from "@/utils/plans";
+import { chargeInCents, planTitle } from "@/utils/plans";
 import {
   Check,
   CheckCircle,
@@ -18,6 +18,7 @@ import {
   WhatsappLogo,
 } from "@phosphor-icons/react";
 import clsx from "clsx";
+import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import AdminForm, { type AdminCreatedResult, type AdminFailure } from "./AdminForm";
 import CompanyForm from "./CompanyForm";
@@ -38,10 +39,14 @@ const SUPPORT_LINK = whatsappLink("Olá! Preciso de ajuda com o cadastro da minh
 const CHECKOUT_ERROR = "Não foi possível abrir o pagamento agora. Tente novamente em instantes.";
 
 interface RegistrationFlowProps {
-  plans: PlanResponseDTO[];
-  defaultPlanId?: string;
-  defaultBillingCycle?: BillingCycle;
-  /** Cadastro aberto com ?freePlan=true: a empresa entra neste plano, sem escolha de plano nem pagamento. */
+  /**
+   * O plano pago escolhido no card de preço da landing (?plano=). Sem ele, o
+   * cadastro pago manda escolher o plano lá antes dos dados da empresa.
+   */
+  chosenPlan?: PlanResponseDTO;
+  /** O ciclo escolhido no card de preço (?ciclo=). */
+  chosenBillingCycle?: BillingCycle;
+  /** Cadastro aberto com ?freePlan=true: a empresa entra neste plano, sem pagamento. */
   freePlanId?: string;
   /**
    * Empresa cujo pagamento acabou de ser confirmado em /pagamento-sucesso: o
@@ -51,15 +56,15 @@ interface RegistrationFlowProps {
 }
 
 export default function RegistrationFlow({
-  plans,
-  defaultPlanId,
-  defaultBillingCycle,
+  chosenPlan,
+  chosenBillingCycle = "monthly",
   freePlanId,
   paidCompanyId,
 }: RegistrationFlowProps) {
   const [step, setStep] = useState<Step>("loading");
   const [companyId, setCompanyId] = useState<string | null>(null);
-  const [billingCycle, setBillingCycle] = useState<BillingCycle>(defaultBillingCycle ?? "monthly");
+  /** O ciclo da empresa já criada, que vai para o pagamento. Um cadastro retomado traz o seu. */
+  const [billingCycle, setBillingCycle] = useState<BillingCycle>(chosenBillingCycle);
   const [resumed, setResumed] = useState(false);
   const [paid, setPaid] = useState(false);
   const [free, setFree] = useState(!!freePlanId);
@@ -150,10 +155,16 @@ export default function RegistrationFlow({
     }
   }, [paidCompanyId, freePlanId]);
 
-  const handleCompanyCreated = (id: string, cycle: BillingCycle, planId: string) => {
-    const plan = free ? undefined : plans.find((p) => p.id === planId);
+  // O plano em que a empresa é criada. Sem ele, o passo da empresa manda escolher o plano na landing.
+  const companyPlan = free ? undefined : chosenPlan;
+  const companyPlanId = free ? freePlanId : chosenPlan?.id;
+
+  const handleCompanyCreated = (id: string) => {
+    const cycle = chosenBillingCycle;
     pendingRegistration.set({ companyId: id, billingCycle: cycle, freePlan: free });
-    pendingRegistration.setCheckout(plan ? { planName: plan.name, valueInCents: chargeInCents(plan, cycle) } : null);
+    pendingRegistration.setCheckout(
+      companyPlan ? { planName: companyPlan.name, valueInCents: chargeInCents(companyPlan, cycle) } : null,
+    );
     setCompanyId(id);
     setBillingCycle(cycle);
     setResumed(false);
@@ -235,22 +246,32 @@ export default function RegistrationFlow({
           </div>
         )}
 
-        {step === "company" && (
-          <>
-            <StepHeader
-              title="Conte sobre a sua empresa"
-              description="Leva uns 3 minutos. Tenha em mãos o cartão CNPJ: os dados precisam ser os mesmos da Receita Federal."
-            />
-            {notice && <Notice tone="warning">{notice}</Notice>}
-            <CompanyForm
-              plans={plans}
-              defaultPlanId={defaultPlanId}
-              defaultBillingCycle={defaultBillingCycle}
-              freePlanId={free ? freePlanId : undefined}
-              onCreated={handleCompanyCreated}
-            />
-          </>
-        )}
+        {step === "company" &&
+          (companyPlanId ? (
+            <>
+              <StepHeader
+                title="Conte sobre a sua empresa"
+                description="Leva uns 3 minutos. Tenha em mãos o cartão CNPJ: os dados precisam ser os mesmos da Receita Federal."
+              />
+              {notice && <Notice tone="warning">{notice}</Notice>}
+              <PlanSummary plan={companyPlan} billingCycle={chosenBillingCycle} />
+              <CompanyForm planId={companyPlanId} onCreated={handleCompanyCreated} />
+            </>
+          ) : (
+            <>
+              <StepHeader
+                title="Escolha o seu plano"
+                description="O cadastro começa pelo plano: veja os planos e clique em Assinar no que for melhor para a sua loja."
+              />
+              {notice && <Notice tone="warning">{notice}</Notice>}
+              <Link
+                href="/#planos"
+                className="inline-flex items-center justify-center rounded-[13px] bg-accent px-7 py-4 text-[15px] font-extrabold text-white transition-colors hover:bg-black"
+              >
+                Ver os planos
+              </Link>
+            </>
+          ))}
 
         {step === "payment" && companyId && (
           <>
@@ -392,6 +413,30 @@ function StepHeader({ title, description }: { title: string; description: string
     <div className="mb-6">
       <h2 className="text-[24px] font-black tracking-[-0.02em] text-ink sm:text-[28px]">{title}</h2>
       <p className="mt-1.5 text-[14.5px] leading-relaxed text-ink-2">{description}</p>
+    </div>
+  );
+}
+
+/** O plano do cadastro, já escolhido no card de preço. Sem `plan`, é o gratuito. */
+function PlanSummary({ plan, billingCycle }: { plan?: PlanResponseDTO; billingCycle: BillingCycle }) {
+  return (
+    <div className="mb-7 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 rounded-[14px] bg-surface-2 px-4 py-3 text-[14px] text-ink-2">
+      {plan ? (
+        <>
+          <p>
+            Plano <strong className="text-ink">{planTitle(plan)}</strong>:{" "}
+            <strong className="text-ink">{formatBRL(chargeInCents(plan, billingCycle))}</strong>
+            {billingCycle === "yearly" ? " por ano, à vista" : " por mês"}
+          </p>
+          <Link href="/#planos" className="font-extrabold text-accent hover:underline">
+            Trocar plano
+          </Link>
+        </>
+      ) : (
+        <p>
+          Plano <strong className="text-ink">gratuito</strong>: sem cobrança e sem cartão de crédito.
+        </p>
+      )}
     </div>
   );
 }

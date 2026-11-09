@@ -27,9 +27,7 @@ function howItWorks(freePlan: boolean) {
     {
       icon: BuildingsIcon,
       title: "Dados da empresa",
-      body: freePlan
-        ? "Escolha o ramo de atividade e informe os dados do cartão CNPJ, o contato e o endereço da loja."
-        : "Escolha o plano, o ramo de atividade e informe os dados do cartão CNPJ, o contato e o endereço da loja.",
+      body: "Escolha o ramo de atividade e informe os dados do cartão CNPJ, o contato e o endereço da loja.",
     },
     ...(freePlan
       ? []
@@ -69,8 +67,9 @@ export default async function CadastroPage({
     getFreePlan(),
     searchParams,
   ]);
-  const defaultPlanId = plans.find((p) => p.name === plano?.toLowerCase())?.id;
-  const defaultBillingCycle = ciclo?.toLowerCase() === "anual" ? "yearly" : "monthly";
+  // O plano e o ciclo vêm do card de preço da landing (/cadastro?plano=&ciclo=).
+  const chosenPlan = plans.find((p) => p.name === plano?.toLowerCase());
+  const chosenBillingCycle = ciclo?.toLowerCase() === "anual" ? "yearly" : "monthly";
   // ?freePlan=true cadastra a empresa no plano gratuito, sem escolha de plano nem pagamento.
   // Se a API não tiver o plano gratuito, segue o cadastro com os planos pagos.
   const freePlanId = freePlanParam?.toLowerCase() === "true" ? freePlan?.id : undefined;
@@ -92,18 +91,13 @@ export default async function CadastroPage({
               <ArrowLeftIcon size={16} weight="bold" /> Voltar para a página
               inicial
             </Link>
-            <p className="mt-8 text-[11.5px] font-extrabold uppercase tracking-[0.12em] text-brand-ink">
-              Cadastro
-            </p>
             <h1 className="mt-2 max-w-[720px] text-[36px] font-black leading-[1.05] tracking-[-0.035em] text-on-brand text-balance sm:text-[52px]">
-              Comece a criar os encartes da sua loja
+              Cadastro
             </h1>
             <p className="mt-4 max-w-[600px] text-[16px] leading-relaxed text-on-brand-soft text-pretty">
               {freePlanId
                 ? "São dois passos: os dados da sua empresa e o seu acesso de administrador. No plano gratuito não há cobrança nem cartão de crédito."
                 : "São três passos: os dados da sua empresa, o pagamento do plano com cartão de crédito e o seu acesso de administrador."}{" "}
-              Se precisar parar no meio, tudo bem: ao voltar por este navegador,
-              você continua de onde parou.
             </p>
           </div>
         </section>
@@ -111,9 +105,8 @@ export default async function CadastroPage({
         <div className="mx-auto grid max-w-[1200px] gap-10 px-4 pt-10 sm:px-7 lg:grid-cols-[1fr_320px]">
           <div className="min-w-0">
             <RegistrationFlow
-              plans={plans}
-              defaultPlanId={defaultPlanId}
-              defaultBillingCycle={defaultBillingCycle}
+              chosenPlan={chosenPlan}
+              chosenBillingCycle={chosenBillingCycle}
               freePlanId={freePlanId}
             />
           </div>
