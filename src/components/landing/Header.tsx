@@ -3,6 +3,7 @@
 import { CTA_LINK, SITE } from "@/content/site";
 import { List, X } from "@phosphor-icons/react";
 import clsx from "clsx";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import Logo from "./Logo";
 
@@ -12,11 +13,14 @@ const LINKS = [
   { href: "/#segmentos", label: "Segmentos" },
   { href: "/#planos", label: "Planos" },
   { href: "/#duvidas", label: "Dúvidas" },
+  { href: "/blog", label: "Blog" },
 ];
 
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname();
+  const isCurrent = (href: string) => !href.includes("#") && (pathname === href || pathname.startsWith(`${href}/`));
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -34,9 +38,14 @@ export default function Header() {
     >
       <div className="mx-auto flex max-w-[1200px] items-center gap-6 px-4 py-3.5 sm:px-7">
         <Logo />
-        <nav aria-label="Principal" className="hidden flex-1 items-center gap-6 lg:flex">
+        <nav aria-label="Principal" className="hidden flex-1 items-center gap-4 lg:flex xl:gap-6">
           {LINKS.map((l) => (
-            <a key={l.href} href={l.href} className="text-[13px] font-bold text-on-brand-soft transition-colors hover:text-accent">
+            <a
+              key={l.href}
+              href={l.href}
+              aria-current={isCurrent(l.href) ? "page" : undefined}
+              className="whitespace-nowrap text-[13px] font-bold text-on-brand-soft transition-colors hover:text-accent aria-[current=page]:text-on-brand aria-[current=page]:underline aria-[current=page]:decoration-accent aria-[current=page]:decoration-2 aria-[current=page]:underline-offset-[6px]"
+            >
               {l.label}
             </a>
           ))}
@@ -44,7 +53,7 @@ export default function Header() {
         <div className="ml-auto hidden items-center gap-2.5 sm:flex lg:ml-0">
           <a
             href={SITE.appUrl}
-            className="rounded-[11px] border-[1.5px] border-black/20 px-4 py-2.5 text-[13px] font-extrabold text-on-brand-soft transition-colors hover:border-black/40 hover:bg-white/30"
+            className="whitespace-nowrap rounded-[11px] border-[1.5px] border-black/20 px-4 py-2.5 text-[13px] font-extrabold text-on-brand-soft transition-colors hover:border-black/40 hover:bg-white/30"
           >
             Entrar
           </a>
@@ -53,7 +62,7 @@ export default function Header() {
             target="_blank"
             rel="noopener noreferrer"
             data-meta-lead
-            className="rounded-[11px] bg-accent px-5 py-2.5 text-[13px] font-extrabold text-white transition-colors hover:bg-black"
+            className="whitespace-nowrap rounded-[11px] bg-accent px-5 py-2.5 text-[13px] font-extrabold text-white transition-colors hover:bg-black"
           >
             Quero meus encartes
           </a>
@@ -77,7 +86,8 @@ export default function Header() {
                 key={l.href}
                 href={l.href}
                 onClick={() => setOpen(false)}
-                className="border-b border-black/10 py-3.5 text-[15px] font-bold text-on-brand"
+                aria-current={isCurrent(l.href) ? "page" : undefined}
+                className="border-b border-black/10 py-3.5 text-[15px] font-bold text-on-brand aria-[current=page]:text-accent"
               >
                 {l.label}
               </a>

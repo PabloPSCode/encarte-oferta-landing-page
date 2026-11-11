@@ -9,6 +9,7 @@ const PRODUCT_LINKS = [
   { href: "/#segmentos", label: "Segmentos" },
   { href: "/#planos", label: "Planos" },
   { href: "/#duvidas", label: "Dúvidas frequentes" },
+  { href: "/blog", label: "Blog" },
 ];
 
 const LEGAL_LINKS = [
