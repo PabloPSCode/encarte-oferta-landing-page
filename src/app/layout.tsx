@@ -4,6 +4,7 @@ import { Montserrat } from "next/font/google";
 //@ts-ignore
 import "../styles/globals.css";
 import CookieNotice from "@/components/landing/CookieNotice";
+import CampaignTracker from "@/components/landing/CampaignTracker";
 import MetaPixel from "@/components/landing/MetaPixel";
 import { SITE } from "@/content/site";
 
@@ -44,6 +45,7 @@ export default function RootLayout({
       <body className="antialiased">
         {children}
         <MetaPixel />
+        <CampaignTracker />
         <CookieNotice />
       </body>
     </html>
