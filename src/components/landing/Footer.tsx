@@ -1,5 +1,5 @@
 import { SITE, SUPPORT, whatsappLink } from "@/content/site";
-import { EnvelopeSimple, WhatsappLogo } from "@phosphor-icons/react/dist/ssr";
+import { WhatsappLogo } from "@phosphor-icons/react/dist/ssr";
 import Link from "next/link";
 import Logo from "./Logo";
 
@@ -50,13 +50,6 @@ export default function Footer() {
                 {SUPPORT.whatsappLabel}
               </a>
               <p className="mt-1 pl-[30px] text-[12px] text-white/80">{SUPPORT.whatsappHours}</p>
-            </li>
-            <li>
-              <a href={`mailto:${SUPPORT.email}`} className="inline-flex items-center gap-2.5 font-bold text-white hover:text-brand">
-                <EnvelopeSimple size={20} weight="bold" className="text-brand" />
-                {SUPPORT.email}
-              </a>
-              <p className="mt-1 pl-[30px] text-[12px] text-white/80">{SUPPORT.emailHours}</p>
             </li>
           </ul>
         </div>

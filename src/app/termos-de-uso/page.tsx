@@ -328,8 +328,7 @@ const sections: LegalSection[] = [
           possível, manutenções programadas serão avisadas.
         </p>
         <p>
-          O suporte é prestado pelo WhatsApp {SUPPORT.whatsappLabel} ({SUPPORT.whatsappHours.toLowerCase()}) e pelo e-mail{" "}
-          <Email /> ({SUPPORT.emailHours.toLowerCase()}).
+          O suporte é prestado pelo WhatsApp {SUPPORT.whatsappLabel} ({SUPPORT.whatsappHours.toLowerCase()}).
         </p>
       </>
     ),
